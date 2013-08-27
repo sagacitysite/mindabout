@@ -1,5 +1,1 @@
-Mind-About
-==========
-Test
-
-Test2
+# mindabout
