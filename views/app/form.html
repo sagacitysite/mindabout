@@ -1,0 +1,11 @@
+<Body:>
+<div class="vorschlaege">
+  <form class="span3" x-bind="submit: vorschlaege.add">
+  	<textarea class="content>{_page.form.inhalt}</textarea>
+  <div>
+	<button type="submit" class="btn">Add</button>
+  </div>
+</div>
+{#each _page.items as :item}
+<p>{{:item.inhalt}}</p>
+{/}
