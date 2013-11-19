@@ -1,0 +1,22 @@
+body {
+  padding: 0;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+a {
+  color: #0069ff;
+}
+#wrapper {
+  width: 450px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background: #fff;
+}
+#logo {
+  text-align: center;
+}
+#display {
+  margin: 20px 0 50px;
+}
+#userbar {
+  margin-bottom: 10px;
+}

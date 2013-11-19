@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <title><%= title %></title>
+        <link rel="stylesheet" href="/style/style.css">
+    </head>
+    <body>
+        <div id="wrapper">
+            <div id="logo">
+                <img src="/images/logo.jpg" />
+            </div>
+            <div id="display">
+                <form method="post">
+                    <span>Name eingeben</span>
+                    <div>
+                        <input type="text" name="username">
+                        <input type="submit" value="Log In">
+                    </div>
+                </form>
+            </div>
+            <%- include footer.ejs %>
+        </div>
+    </body>
+</html>
