@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <title>ejs - <%= title %></title>
+        <link rel="stylesheet" href="/style/style.css">
+    </head>
+    <body>
+        <div id="wrapper">
+            <div id="display">
+            <p>Username: <%= username %></p>
+            <p>Hier müss die Liste mit den Pads angezeigt werden</p>
+            <!-- Wie werden denn die Daten hier ausgelesen?
+            Die Funktion login.etherpads hat ja die Liste(items) übergeben,
+            aber foreach gibts hier nicht.
+            Bei jade ist es kein Problem, siehe etherpads.jade-->
+            <p><%= items.PAD1.url %></p>
+            </div>
+        </div>
+    </body>
+</html>
