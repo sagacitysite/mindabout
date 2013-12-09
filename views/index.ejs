@@ -1,12 +1,17 @@
+<!DOCTYPE html>
 <html>
     <head>
-        <title>ejs - <% title %></title>
+        <title>mindabout | <%= obj.title %></title>
         <link rel="stylesheet" href="/style/style.css">
+        <link rel="shortcut icon" href="/img/favicon.ico">
     </head>
     <body>
         <div id="wrapper">
-            <% inc %>
-            <% include footer.ejs %>
+            <%= include header.ejs %>
+            <div id="display">
+                <%- body %>
+            </div>
+            <%= include footer.ejs %>
         </div>
     </body>
 </html>

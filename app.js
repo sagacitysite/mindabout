@@ -1,12 +1,12 @@
-
 /**
  * Module dependencies.
  */
-
 var express = require('express');
 var http = require('http');
 var path = require('path');
 var login = require('./routes/login');
+//var partials = require('express-partials');
+var expressLayouts = require('express-ejs-layouts');
 
 var app = express();
 
@@ -15,6 +15,16 @@ app.set('port', process.env.PORT || process.env.PORT);
 app.set('views', path.join(__dirname, 'views'));
 //app.set('view engine', 'jade');
 app.set('view engine', 'ejs');
+//app.engine('.html', require('ejs').__express);
+//app.set('views', __dirname);
+
+//app.set('view engine', 'html');
+//app.register('.html', require('ejs'));
+
+app.use(expressLayouts);
+app.set('layout', 'index')
+
+//app.use(partials());
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.json());
