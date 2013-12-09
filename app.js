@@ -10,7 +10,7 @@ var expressLayouts = require('express-ejs-layouts');
 var app = express();
 
 // all environments
-app.set('port', process.env.PORT || process.env.PORT);
+app.set('port', 3000|| 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.set('layout', 'index')

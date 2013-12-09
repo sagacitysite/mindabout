@@ -1,14 +1,17 @@
-<p>Your name: <%= obj.username %></p>
-<p>Listing of current pads:</p>
+<p>Your name: <%= username %></p>
+<p><strong>Listing of current pads:</strong></p>
 
 <ul>
-<% for(var i=0; i<obj.items.length; i++) {%>
-   <li><%= obj.items[i] %></li>
-<% } %>
-</ul>
-
-<ul>
-    <% obj.items.forEach(function (item){ %>
+    <% pads.forEach(function (item){ %>
         <li><%= item %></li>
     <% }); %>
 </ul>
+
+<br/>
+<form method="post">
+    <div class="legend"><p><strong>Create new pad:</strong></p></div>
+    <div>
+        <input type="text" name="padname">
+        <input type="submit" value="Save">
+    </div>
+</form>
