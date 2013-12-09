@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  #wrapper
+    #logo
+        a(href='/')
+        img(src='/images/logo.jpg')
+    #display
+        #login        
+            form(method='post')
+                | Name eingeben
+                div
+                    input(type='text', name='username')
+                    input(type='submit', value='Log In')
+        
+    include footer
