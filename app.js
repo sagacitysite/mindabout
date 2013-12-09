@@ -5,7 +5,6 @@ var express = require('express');
 var http = require('http');
 var path = require('path');
 var login = require('./routes/login');
-//var partials = require('express-partials');
 var expressLayouts = require('express-ejs-layouts');
 
 var app = express();
@@ -13,18 +12,10 @@ var app = express();
 // all environments
 app.set('port', process.env.PORT || process.env.PORT);
 app.set('views', path.join(__dirname, 'views'));
-//app.set('view engine', 'jade');
 app.set('view engine', 'ejs');
-//app.engine('.html', require('ejs').__express);
-//app.set('views', __dirname);
-
-//app.set('view engine', 'html');
-//app.register('.html', require('ejs'));
-
-app.use(expressLayouts);
 app.set('layout', 'index')
 
-//app.use(partials());
+app.use(expressLayouts);
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.json());
@@ -40,14 +31,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
-//f√ºr die URL '/' wird login.js Funtkion home aufgerufen
+//für die URL '/' wird login.js Funtkion home aufgerufen
 app.get('/', login.home);
 
 // display the list of Ehterpads
-app.get('/padList', login.etherpads);
+app.get('/padlist', login.etherpads);
 
-//Handler f√ºr Daten die √ºber Post kommen
+//Handler für Daten die über Post kommen
 app.post('/', login.home_post_handler);
+app.post('/padlist', login.etherpads_post_handler);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
