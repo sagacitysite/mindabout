@@ -13,6 +13,9 @@ a {
 p {
   margin-bottom: 0.8em;
 }
+ul {
+  list-style-position: inside;
+}
 h1 {
   font-size: 1.3em;
   margin-bottom: 0.4em;
@@ -42,6 +45,7 @@ h1 {
 #footer ul li {
   float: left;
   margin-right: 0.5em;
+  list-style: none;
 }
 input {
   padding: 0.2em 0.4em;

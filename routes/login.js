@@ -1,7 +1,8 @@
 var path = require('path');
 var ejs = require('ejs');
+var $ = require('jquery');
 
-//handler f�r die Homepage
+//handler für die Homepage
 exports.home = function(req, res){
      // if user is not logged in, ask them to login
     if (typeof req.session.username == 'undefined') {
@@ -44,11 +45,13 @@ exports.etherpads = function(req, res) {
 };
 
 exports.etherpads_post_handler = function(req, res) {
-    //var filepath = path.resolve(__dirname, "..");
-    //var callback = new ejs({url: filepath + '/views/etherpads.ejs'}).update('pads');
     pads.push(req.body.padname);
     
-    res.redirect('/');
+    console.log('Neu: '+req.body.padname);
+    res.contentType('json');
+    res.send({pads: JSON.stringify(pads)});
     
-    //res.renderPjax('etherpads', { pads: pads });
+    //TODO Response enfügen
+    //sowas wie "break", er soll hier nicht mehr weiter arbeitern, keine Seite laden o.ä.
+    //http://stackoverflow.com/questions/9107226/how-do-i-end-an-expressjs-node-post-response
 };

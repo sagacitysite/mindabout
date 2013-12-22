@@ -1,17 +1,52 @@
 <p>Your name: <%= username %></p>
 <p><strong>Listing of current pads:</strong></p>
 
-<ul>
+<ul id="list">
     <% pads.forEach(function (item){ %>
         <li><%= item %></li>
     <% }); %>
 </ul>
 
 <br/>
-<form method="post">
+<div>
     <div class="legend"><p><strong>Create new pad:</strong></p></div>
     <div>
-        <input type="text" name="padname">
-        <input type="submit" value="Save">
+        <input id="padname" type="text" name="padname">
+        <input id="save" type="button" value="Save">
     </div>
-</form>
+</div>
+
+<script type="text/javascript">
+$(function(){
+    $('#save').click(function newpad(e){
+        e.preventDefault();
+        
+        $('#list').empty();
+        $("#list").append('<img src="../img/ladekreis_2.gif" />');
+        
+        var newpadname = document.getElementById('padname').value;
+        var data = {padname: newpadname};
+
+        $.ajax({
+            url: "/padlist/save",
+            type: "POST",
+            dataType: "json",
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            cache: false,
+            timeout: 5000,
+            success: function(data) {
+                $('#list').empty();
+                $.each(JSON.parse(data.pads), function( index, padname ) {
+                    $("#list").append('<li>'+padname+'</li>');
+                });
+                
+                document.getElementById('padname').value = "";
+            },
+            error: function() {
+                console.log('process error');
+            }
+        });
+    });
+});
+</script>

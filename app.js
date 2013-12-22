@@ -10,7 +10,7 @@ var expressLayouts = require('express-ejs-layouts');
 var app = express();
 
 // all environments
-app.set('port', 3000|| 3000);
+app.set('port', process.env.PORT || process.env.PORT);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.set('layout', 'index')
@@ -31,15 +31,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
-//für die URL '/' wird login.js Funtkion home aufgerufen
+//f√ºr die URL '/' wird login.js Funtkion home aufgerufen
 app.get('/', login.home);
 
 // display the list of Ehterpads
 app.get('/padlist', login.etherpads);
 
-//Handler für Daten die über Post kommen
+//Handler f√ºr Daten die √ºber Post kommen
 app.post('/', login.home_post_handler);
-app.post('/padlist', login.etherpads_post_handler);
+app.post('/padlist/save', login.etherpads_post_handler);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
