@@ -4,18 +4,17 @@
 var express = require('express');
 var http = require('http');
 var path = require('path');
-var login = require('./routes/login');
-var expressLayouts = require('express-ejs-layouts');
+var mongoskin = require('mongoskin');
+
+var db = mongoskin.db(3000, { database: 'mindabout' });
 
 var app = express();
 
 // all environments
-app.set('port', process.env.PORT || process.env.PORT);
+app.set('port', 3000 || 300);
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-app.set('layout', 'index')
+app.set('view engine', 'hbs');
 
-app.use(expressLayouts);
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.json());
@@ -23,23 +22,27 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 app.use(express.session());
-app.use(app.router);
-app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// development only
-if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
-}
-//für die URL '/' wird login.js Funtkion home aufgerufen
-app.get('/', login.home);
+app.get('/json/pads', function(req, res) {
+    db.collection('pads').find().toArray(function(err, pads) {
+        res.json(pads);
+    });
+});
 
-// display the list of Ehterpads
-app.get('/padlist', login.etherpads);
+app.post('/json/pad', function(req, res) {
+    var pad = req.body;
+    db.collection('pads').insert(pad, function(err, pad){
+        console.log(err);
+        res.json(pad);
+    }); 
+});
 
-//Handler für Daten die über Post kommen
-app.post('/', login.home_post_handler);
-app.post('/padlist/save', login.etherpads_post_handler);
+app.delete('/json/pad/:id', function(req,res) {
+    db.collection('pads').removeById(req.params.id, function() {
+        res.json({deleted: true});
+    });
+});
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

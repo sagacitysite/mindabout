@@ -1,14 +1,12 @@
 {
-  "name": "application-name",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "start": "node app.js"
-  },
-  "dependencies": {
-    "express": "3.4.4",
-    "jade": "*",
-    "stylus": "*",
-    "ejs-locals": "~1.0.2"
-  }
+    "name": "Mindabout",
+    "dependencies": {
+        "express": "*",
+        "requirejs": "*",
+        "underscore": "*",
+        "ejs": "*",
+        "backbone": "*",
+        "backbone.marionette": "*",
+        "mongoskin": "*"
+    }
 }

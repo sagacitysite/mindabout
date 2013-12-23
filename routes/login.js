@@ -1,6 +1,5 @@
 var path = require('path');
 var ejs = require('ejs');
-var $ = require('jquery');
 
 //handler für die Homepage
 exports.home = function(req, res){
