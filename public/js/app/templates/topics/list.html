@@ -1,0 +1,53 @@
+<!-- Lightbox Area -->
+<div class="lightbox" id="box-topic-new">
+    <div class="inner-lightbox">
+        
+        <h1>New Topic</h1>
+            
+        <div class="it">
+            <label for="topic-name">Name:</label><br/>
+            <input type="text" name="topic-name" />
+        </div>
+        <div class="it">
+            <label for="topic-desc">Description:</label><br/>
+            <textarea rows="8" name="topic-desc"></textarea>
+        </div>
+        <input type="hidden" name="topic-status" value="0" />
+        <input type="hidden" name="topic-level" value="0" />
+        <button class="save">Save Topic</button>
+        <button class="cancel">Cancel</button>
+    </div>
+</div>
+
+<!-- Content Area -->
+<div class="box small-box" id="box-topics">
+    <h1>New Topics</h1>
+    
+    <button class="add">Add Topic</button>
+    
+    <ul class="topic-list-new"></ul>
+</div>
+
+<div class="box small-box" id="box-topics">
+    <h1>Waiting Topics</h1>
+    
+    <ul class="topic-list-waiting"></ul>
+</div>
+
+<div class="box small-box" id="box-topics">
+    <h1>Selected Topics</h1>
+    
+    <ul class="topic-list-proposal"></ul>
+</div>
+
+<div class="box small-box" id="box-topics">
+    <h1>Running Topics</h1>
+    
+    <ul class="topic-list-consensus"></ul>
+</div>
+
+<div class="box small-box" id="box-topics">
+    <h1>Results</h1>
+    
+    <ul class="topic-list-closed"></ul>
+</div>

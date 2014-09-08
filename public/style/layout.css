@@ -1,0 +1,152 @@
+#loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #333 url('../img/ladekreis4.gif') center center no-repeat;
+}
+
+#wrapper {
+    position: relative;
+}
+
+#header {
+    position: fixed;
+    display: block;
+    height: 50px;
+    width: 100%;
+    background: #fff url("../img/logo.png") 1em center no-repeat;
+    border-bottom: 1px solid #ccc;
+    padding: 20px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    z-index: 100;
+}
+
+#toolbar {
+    position: absolute;
+    right: 60px;
+    top: 40px;
+}
+
+#toolbar li {
+    list-style: none;
+    margin: 0 0.5em;
+    float: left;
+}
+
+#toolbar #separation {
+    height: 32px;
+    border-left: 1px solid #999;
+}
+
+#toolbar a {
+    display: block;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: left top;
+    background-color: transparent;
+}
+
+#toolbar a .count {
+    display: block;
+    color: #fff;
+    text-shadow: 0 0 2px rgba(0,0,0,0.8);
+    font-size: 10px;
+    line-height: 12px;
+    text-align: center;
+    background-color: red;
+    width: 12px;
+    height: 12px;
+}
+
+#toolbar #noti-topics { background-image: url('../img/ico_topics.png'); }
+#toolbar #noti-msg { background-image: url('../img/ico_msg.png'); }
+#toolbar #noti-reput { background-image: url('../img/ico_reput.png'); }
+#toolbar #settings { background-image: url('../img/ico_settings.png'); }
+
+#navigation {
+    position: fixed;
+    top: 90px;
+    width: 200px;
+    height: 9999px;
+    background-color: #999;
+    box-shadow: inset -5px 0 10px -5px rgba(0,0,0,0.4);
+    border-right: 1px solid #999;
+}
+
+#navigation li {
+    list-style: none;
+}
+
+#navigation li a:before {
+    content: '» ';
+}
+
+#navigation li a {
+    display: block;
+    font-size: 0.9em;
+    line-height: 1.7em;
+    padding: 0 1em;
+    background-color: #777;
+    color: #ccc;
+    border-bottom: 1px solid #666;
+    border-top: 1px solid #888;
+    z-index: 1;
+}
+
+#content {
+    position: relative;
+    top: 90px;
+    left: 0;
+    margin-left: 200px;
+    padding: 1em 3em;
+}
+
+.box {
+    padding: 1em;
+    margin: 1em;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    display: inline-block;
+    
+}
+
+.lightbox {
+    display: none;
+    height: 100%;
+    width: 100%;
+    background: transparent url('../img/transbg.png') left top repeat;
+    z-index: 100;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.inner-lightbox {
+    background-color: #fff;
+    padding: 1em;
+    width: 500px;
+    box-shadow: 0 0 5px #000;
+    border-radius: 3px;
+    margin: 100px auto;
+}
+
+.it { margin-bottom: 0.5em; }
+.small-box { width: 400px; }
+.large-box { width: 800px; }
+
+/*#footer {
+    clear: both;
+    border-top: 1px solid #ccc;
+    padding-top: 1em;
+    margin-top: 1em;
+}
+
+#footer ul li {
+    float: left;
+    margin-right: 0.5em;
+    list-style: none;
+}*/

@@ -1,0 +1,86 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    padding: 0;
+    font: 1em sans-serif;
+    background-color: #f8f8f8;
+}
+
+a {
+    color: #0069ff;
+    text-decoration: none;
+}
+
+a:hover,a:active,a:focus {
+    text-shadow: 0 0 5px #999;
+}
+
+p {
+    margin-bottom: 0.8em;
+}
+
+ul {
+    list-style-position: inside;
+}
+
+h1 {
+    font-size: 1.3em;
+    margin-bottom: 0.4em;
+}
+
+label {
+    font-weight: bold;
+}
+
+/* input fields, buttons */
+
+input, textarea {
+    padding: 0.4em;
+    width: 250px;
+    font-family: inherit;
+}
+
+input[type=text],
+input[type=email],
+input[type=password],
+textarea {
+    font-size: 0.9em;
+    border: 1px solid #777;
+    box-shadow: inset 0 0 2px #dda0dd;
+}
+
+input[type=text]:hover,
+input[type=email]:hover,
+input[type=password]:hover,
+textarea:hover {
+    box-shadow: 0 0 2px #4b0082;
+    background-color: #fbfbfb;
+}
+
+input[type=text]:focus,
+input[type=email]:focus,
+input[type=password]:focus,
+textarea:focus {
+    box-shadow: 0 0 4px #4b0082;
+    background-color: #f8f8f8;
+}
+
+input[type=submit],button {
+    color: inherit;
+    font-size: 0.9em;
+    border: 1px solid #ccc;
+    padding: 0.3em 0.6em;
+    margin: 0 0.2em 0.2em 0;
+    background: #ddd url('../img/button.png') repeat-x left top;
+    cursor: pointer;
+    box-shadow: 0 0 2px 0 rgba(0,0,0,0.2);
+}
+
+input[type=submit]:hover, input[type=submit]:focus,
+button:hover, button:focus {
+    background: #e8e8e8 none;
+	border-color: #bbb;
+}
