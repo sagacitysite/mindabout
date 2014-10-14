@@ -7,6 +7,7 @@ var bcrypt = require('bcrypt');
 var express = require('express');
 var http = require('http');
 var path = require('path');
+//var mongodb = require('mongodb');
 var mongoskin = require('mongoskin');
 var db = mongoskin.db(process.env.IP, { database: 'mindabout' });
 var app = express();
@@ -66,7 +67,7 @@ function auth(req, res, next) {
             next(req, res);
         } else {
             console.log('User authentication invalid');
-            res.json({ error: "Client has no valid login cookies."  });
+            res.json({ error: "Client has no valid login cookies." });
         }
     });
 }
@@ -74,17 +75,65 @@ function auth(req, res, next) {
 // topics
 app.get('/json/topics', function(req, res) { auth(req, res, function(req, res) {
     db.collection('topics').find().toArray(function(err, topics) {
-        res.json(topics);
+        
+        _.each(topics,function(topic) {
+            _.extend(topic,{votes: 5});
+        });
+
+        res.json(topics); // TODO get votes from table
         console.log('get topics');
     });
 });});
 
+app.put('/json/topic/:id', function(req, res) { auth(req, res, function(req, res) {
+    var topic = req.body;
+    
+    // TODO crashes server
+    // // only allow new topics if they do not exist yet
+    // if(db.collection('topics').count( { name: topic.name } ) > 0) {
+    //     res.json({error:'Topic already exists!'});
+    //     return;
+    // }
+
+    var ObjectId = require('mongodb').ObjectID;
+    db.collection('topics').update(
+        { _id: ObjectId(topic._id) }, { $set: {name: topic.name, desc: topic.desc } }, {}); // FIXME
+    res.json(topic);
+    
+});});
+
 app.post('/json/topic', function(req, res) { auth(req, res, function(req, res) {
     var topic = req.body;
+    
+    topic.status = 0;
+    topic.level = 0;
     db.collection('topics').insert(topic, function(err, topic){
         res.json(topic[0]);
         console.log('new topic');
     });
+
+});});
+
+app.delete('/json/topic/:id', function(req, res) { auth(req, res, function(req,res) {
+    db.collection('topics').removeById(req.params.id, function() {
+        res.json({deleted: true});
+    });
+});});
+
+app.post('/json/topic-vote', function(req, res) { auth(req, res, function(req, res) {
+    var topic_vote = req.body;
+    
+    // get user name and put into vote
+    topic_vote['uid'] = req.signedCookies.uid;
+    
+    // only allow voting if user has not already voted for this topic
+    if(db.collection('topic_votes').count( topic_vote ) > 0)
+        return;
+    
+    // db.collection('topic_votes').insert(topic_vote, function(err, topic_vote){
+    //     //res.json(topic_vote[0]);
+    //     console.log('user voted for topic');
+    // });
 });});
 
 // pads

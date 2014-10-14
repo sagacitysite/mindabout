@@ -1,0 +1,20 @@
+#content .ico {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    line-height: 0;
+    background-color: transparent;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+#content .ico span { display: none; }
+
+#content .vote-up { background-image: url('../img/vote.png'); }
+#content .edit { background-image: url('../img/edit.png'); }
+#content .del { background-image: url('../img/del.png'); }
+
+#content .join {
+    background: transparent url('../img/participate.png') 5px center no-repeat;
+    padding-left: 22px;
+}

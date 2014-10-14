@@ -1,0 +1,20 @@
+<td><button class="join">Join</button></td>
+<td title="{{desc}}"><a class="open">{{name}}</a></td>
+<!--<td>{{desc}}</td>-->
+<td>
+    {{#ifis status 0}}Selection{{/ifis}}
+    {{#ifis status 1}}Waiting{{/ifis}}
+    {{#ifis status 2}}Proposal{{/ifis}}
+    {{#ifis status 3}}Consensus{{/ifis}}
+    {{#ifis status 4}}Closed{{/ifis}}
+</td>
+<td class="cell-center">{{level}}</td>
+<!--<td>{{doc}}</td>-->
+<td>
+    <span>{{votes}}</span>
+    {{#ifis status 0}}
+        <a class="ico vote-up" title="vote for topic '{{name}}'"><span>vote</span></a>
+    {{/ifis}}
+</td>
+<td><a class="ico edit" title="edit"><span>edit</span></a></td>
+<td><a class="ico del" title="delete"><span>delete</span></a></td>

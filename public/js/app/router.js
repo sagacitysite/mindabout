@@ -7,7 +7,7 @@ define([
     "BackboneRouteFilter"
 ], function(app,BackboneRouteFilter){
 
-    var Router = Backbone.Router.extend({
+    var AuthRouter = Backbone.Router.extend({
 
         initialize: function(){
             _.bindAll.apply(_, [this].concat(_.functions(this)));
@@ -26,6 +26,6 @@ define([
 
     });
 
-    return Router;
+    return AuthRouter;
 
 });

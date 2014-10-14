@@ -1,11 +1,13 @@
 define([
   'jquery',
   'Marionette',
-  'layouts/application'
+  'layouts/application',
+  'router'
 ], function (
   $,
   Marionette,
-  AppLayout
+  AppLayout,
+  AuthRouter
   ) {
     
   // will be overwritten by main

@@ -136,7 +136,16 @@
 
 .it { margin-bottom: 0.5em; }
 .small-box { width: 400px; }
+.medium-box { width: 600px; }
 .large-box { width: 800px; }
+
+table .cell-center {
+    text-align: center;
+}
+
+table .cell-right {
+    text-align: right;
+}
 
 /*#footer {
     clear: both;

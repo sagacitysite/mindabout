@@ -10,6 +10,7 @@ body {
 }
 
 a {
+    cursor: pointer;
     color: #0069ff;
     text-decoration: none;
 }
@@ -35,7 +36,7 @@ label {
     font-weight: bold;
 }
 
-/* input fields, buttons */
+/* ##### input fields, buttons ##### */
 
 input, textarea {
     padding: 0.4em;
@@ -83,4 +84,34 @@ input[type=submit]:hover, input[type=submit]:focus,
 button:hover, button:focus {
     background: #e8e8e8 none;
 	border-color: #bbb;
+}
+
+/* ##### tables ##### */
+
+table {
+    border-spacing: 0;
+}
+
+table thead tr {
+    background-color: #777;
+    color: #ccc;
+}
+
+table thead tr th {
+    font-weight: normal;
+    text-align: left;
+    padding: 5px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+}
+
+table tbody tr:nth-child(odd) {
+    background-color: #eee;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #ddd;
+}
+
+table tbody tr td {
+    padding: 5px;
 }

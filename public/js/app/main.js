@@ -42,7 +42,7 @@
     }
   });
   
-  require(['underscore','Backbone','Session','router'], function(_, Backbone, Session, Router) {
+  require(['underscore','Backbone','Session','router'], function(_, Backbone, Session, AuthRouter) {
     var modules = {
         core: 'modules/core'
     };
@@ -60,7 +60,7 @@
       // Create a new session model and scope it to the app global
       // This will be a singleton, which other modules can access
       Application.session = new Session({});
-      Application.router = new Router({});
+      //Application.router = new AuthRouter({});
       
       var app = window.App = new Application();
       var module_names = _.keys(modules);
@@ -70,9 +70,7 @@
         app.module(module_names[index], module);
       });
 
-      app.start();
-
-      // Check the auth status upon initialization,
+      /*// Check the auth status upon initialization,
       // before rendering anything or matching routes
       Application.session.checkAuth({
             // Start the backbone routing once we have captured a user's auth status
@@ -82,7 +80,10 @@
                 if(hasPushstate) Backbone.history.start({ pushState: true, root: '/' } );
                 else Backbone.history.start({ pushState: false, root: '/' });
             }
-      });
+      });*/
+      
+      app.start();
+      Backbone.history.start({ pushState: false, root: '/' });
       
       /*// All navigation that is relative should be passed through the navigate
       // method, to be processed by the router. If the link has a `data-bypass`
