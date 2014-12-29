@@ -2,10 +2,20 @@
 /**
  * Module dependencies.
  */
+
+var express = require('express');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+var methodOverride = require('method-override');
+var session = require('express-session');
+var bodyParser = require('body-parser');
+var multer = require('multer');
+var errorHandler = require('errorhandler');
+var http = require('http');
+var cookieSession = require('cookie-session');
+
 var _ = require('underscore');
 var bcrypt = require('bcrypt');
-var express = require('express');
-var http = require('http');
 var path = require('path');
 //var mongodb = require('mongodb');
 var mongoskin = require('mongoskin');
@@ -17,13 +27,12 @@ app.set('port', process.env.PORT || process.env.PORT);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.methodOverride());
-app.use(express.cookieParser('secret'));
-app.use(express.session());
+app.use(favicon('public/img/favicon.ico'));
+app.use(logger('dev'));
+app.use(bodyParser.urlencoded());
+app.use(methodOverride());
+app.use(cookieSession('secret'));
+app.use(session());
 app.use(express.static(path.join(__dirname, 'public')));
 
 /*// TODO use http://passportjs.org/guide/basic-digest/ ?
@@ -56,6 +65,17 @@ function clean_user_data(user) {
     return _.omit(user, ['upw', 'auth_token']);
 }
 
+function count_votes(tid_) {
+    var result;
+    var test = db.collection('topic_votes').count( {tid:tid_}, function(err, count) {
+        console.log(count);
+        result = count;
+    });
+    
+    console.log(test);
+    return result;
+}
+
 // auth to encapsulate, e.g. app.get('/json/pads', auth(req,res,function(req, res) ...
 function auth(req, res, next) {
     db.collection('users').findOne({ uid: req.signedCookies.uid, auth_token: req.signedCookies.auth_token }, function(err, user){
@@ -72,12 +92,15 @@ function auth(req, res, next) {
     });
 }
 
-// topics
+// ###################
+// ### T O P I C S ###
+// ###################
+
 app.get('/json/topics', function(req, res) { auth(req, res, function(req, res) {
     db.collection('topics').find().toArray(function(err, topics) {
         
         _.each(topics,function(topic) {
-            _.extend(topic,{votes: 5});
+            _.extend(topic,{votes: 5});//count_votes(topic._id)});
         });
 
         res.json(topics); // TODO get votes from table
@@ -136,18 +159,26 @@ app.post('/json/topic-vote', function(req, res) { auth(req, res, function(req, r
         }
         
         // return number of current votes
-        db.collection('topic_votes').count( {tid:topic_vote.tid}, function(err, count) {
-            res.json(count);
-        });
+        //console.log(count_votes(topic_vote.tid));
+        res.json(count_votes(topic_vote.tid));
     });
     
 });});
 
-// pads
+// ###################
+// ### G R O U P S ###
+// ###################
+
+// get group by id
+
+// ###################
+// ###   P A D S   ###
+// ###################
+
 app.get('/json/pads', function(req, res) { auth(req, res, function(req, res) {
     db.collection('pads').find().toArray(function(err, pads) {
         res.json(pads);
-        console.log('Getting pads');
+        console.log('get pads');
     });
 });});
 
@@ -163,6 +194,10 @@ app.delete('/json/pad/:id', function(req, res) { auth(req, res, function(req,res
         res.json({deleted: true});
     });
 });});
+
+// ###################
+// ###   A U T H   ###
+// ###################
 
 // authentification
 // TODO required?

@@ -6,7 +6,8 @@
       jquery: '../vendor/jquery.min',
       jquerycookie: '../vendor/jquery.cookie.min',
       underscore: '../vendor/underscore-min',
-      Backbone: '../vendor/backbone-min',
+      backbone: '../vendor/backbone-min',
+      //Backbone: '../vendor/backbone-min',
       BackboneRouteFilter: '../vendor/backbone.routefilter.min',
       Marionette: '../vendor/backbone.marionette.min',
       handlebars: '../vendor/handlebars',
@@ -20,16 +21,16 @@
       underscore: {
         exports: '_'
       },
-      Backbone: {
+      backbone: {
         deps: ['jquery', 'underscore'],
-        exports: 'Backbone'
+        exports: 'backbone'
       },
       BackboneRouteFilter: {
-        deps: ['Backbone'],
+        deps: ['backbone'],
         exports: 'BackboneRouteFilter'
       },
       Marionette: {
-        deps: ['jquery', 'underscore', 'Backbone'],
+        deps: ['jquery', 'underscore', 'backbone'],
         exports: 'Marionette'
       },
       handlebars: {
@@ -42,7 +43,7 @@
     }
   });
   
-  require(['underscore','Backbone','Session','router'], function(_, Backbone, Session, AuthRouter) {
+  require(['underscore','backbone','Session','router'], function(_, Backbone, Session, AuthRouter) {
     var modules = {
         core: 'modules/core'
     };
