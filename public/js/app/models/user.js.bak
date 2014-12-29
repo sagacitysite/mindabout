@@ -1,6 +1,6 @@
 define([
     'underscore',
-    'Backbone'
+    'backbone'
 ], function(_, Backbone){
 
     var UserModel = Backbone.Model.extend({

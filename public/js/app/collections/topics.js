@@ -1,5 +1,5 @@
 define([
-    'Backbone',
+    'backbone',
     'models/topic'
     ], function(
         Backbone,

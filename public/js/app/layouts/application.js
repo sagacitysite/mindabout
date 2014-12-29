@@ -6,7 +6,7 @@ define([
     Template
     ) {
     //Template application.html wird beschrieben
-    var Layout = Marionette.Layout.extend({
+    var Layout = Marionette.LayoutView.extend({
         template: Template,
         id: 'wrapper',
         

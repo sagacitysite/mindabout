@@ -54,11 +54,11 @@
                 <h2>Manage</h2>
             </div>
             <div class="block-content">
-                <button class="join">Join</button>
-                <button class="voteup">Vote</button>
-                <button class="merge">Merge</button>
-                <button class="edit">Edit</button>
-                <button class="del">Delete</button>
+                <button class="join"><span>Join</span></button>
+                <button class="voteup{{#if voted}} voted{{/if}}"><span>{{#if voted}}Voted{{else}}Vote{{/if}}</span></button>
+                <button class="merge"><span>Merge</span></button>
+                <button class="edit"><span>Edit</span></button>
+                <button class="del"><span>Delete</span></button>
             </div>
         </div>
         

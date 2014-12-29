@@ -1,0 +1,28 @@
+#content .ico {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    line-height: 0;
+    background-color: transparent;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+#content .ico span { display: none; }
+
+#content .edit span { background-image: url('../img/edit.png'); }
+#content .del span { background-image: url('../img/del.png'); }
+#content .join span { background-image: url('../img/participate.png'); }
+#content .voteup span { background-image: url('../img/vote.png'); }
+#content .merge span { background-image: url('../img/merge.png'); }
+
+#content .join.joined,
+#content .voteup.voted {
+    background: #dfb none; /*#fdb*/
+    box-shadow: inset 0 0 8px 2px rgba(0,0,0,0.2);
+}
+
+#box-topic-details #left-area {
+    float: left;
+    width: 600px;
+}

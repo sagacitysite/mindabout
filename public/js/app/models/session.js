@@ -1,6 +1,6 @@
 define([
     'underscore',
-    'Backbone',
+    'backbone',
     'models/user'
 ], function(_, Backbone, User){
 

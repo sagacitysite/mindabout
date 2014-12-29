@@ -1,7 +1,7 @@
-<td><button class="join" title="join this topic">Join</button></td>
+<td><button class="join" title="join this topic"><span>Join</span></button></td>
 <td>
     {{#ifis status 0}}
-        <button class="voteup{{#if voted}} voted{{/if}}" title="vote for this topic">Vote ({{votes}})</button>
+        <button class="voteup{{#if voted}} voted{{/if}}" title="vote for this topic"><span>Vote ({{votes}})</span></button>
     {{else}}
         <span>{{votes}}</span>
     {{/ifis}}
