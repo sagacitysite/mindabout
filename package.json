@@ -1,7 +1,17 @@
 {
     "name": "Mindabout",
+    "version": "1.0.0",
     "dependencies": {
+        "fresh": "*",
+        "cookie-signature": "*",
+        "cookie": "*",
+        "send": "*",
+        "range-parser": "*",
         "serve-favicon": "*",
+        "buffer-crc32": "0.2.1",
+        "methods": "0.1.0",
+        "debug": "*",
+        "connect": "2.11.0",
         "morgan": "*",
         "method-override": "*",
         "express-session": "*",
@@ -18,6 +28,6 @@
         "backbone": "*",
         "backbone.marionette": "*",
         "mongoskin": "*",
-        "mongodb": ">= 2.4.9"
+        "mongodb": "1.4.4"
     }
 }
