@@ -1,13 +1,19 @@
 define([
     'Marionette',
-    'hbs!templates/topics/list-item'
+    'hbs!templates/topics/details',
+    'models/topic'
 ], function(
     Marionette,
-    Template
+    Template,
+    Model
     ) {
+        
+    var Topic = new Model({_id:this.id});
+    //Topic.set('_id',this.id); // FIXME
+        
     var View = Marionette.ItemView.extend({
         template: Template,
-        tagName: 'tr',
+        model: Topic,
         
         events: {
             'click .del': function() {
@@ -22,7 +28,7 @@ define([
                            this.render();
                        }.bind(this));
             },
-            'click .participate': function(e) {
+            'click .join': function(e) {
                 e.preventDefault();
             },
             'click .edit': function(e) {
@@ -31,30 +37,16 @@ define([
                 $(".topic-desc").val(this.model.get('desc'));
                 
                 $(".lightbox").fadeIn(500);
-            },
-            // 'click .save': function(e) {
-            //     // FIXME this is not being called
-            //     e.preventDefault();
-            //     this.model.name = this.$(".topic-name").val(),
-            //     this.model.desc = this.$(".topic-desc").val(),
-                
-            //     this.model.save();
-            // },
-            'click .cancel': function(e) {
-                this.$(".lightbox").fadeOut(500);
-                this.$(".topic-name").val("");
-                this.$(".topic-desc").val("");
             }
         },
         
+        onBeforeRender: function() {
+            this.model.fetch();
+        },
+        
         initialize: function() {
-            Handlebars.registerHelper('ifis', function(a, b, opts) {
-                if(a == b) {
-                    return opts.fn(this);
-                } else {
-                    return opts.inverse(this);
-                }
-            });
+            this.model.set('_id',this.id);
+            alert(this.id);
         }
     });
     

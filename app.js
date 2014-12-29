@@ -83,6 +83,7 @@ app.get('/json/topics', function(req, res) { auth(req, res, function(req, res) {
         res.json(topics); // TODO get votes from table
         console.log('get topics');
     });
+    
 });});
 
 app.put('/json/topic/:id', function(req, res) { auth(req, res, function(req, res) {
@@ -126,14 +127,20 @@ app.post('/json/topic-vote', function(req, res) { auth(req, res, function(req, r
     // get user name and put into vote
     topic_vote['uid'] = req.signedCookies.uid;
     
-    // only allow voting if user has not already voted for this topic
-    if(db.collection('topic_votes').count( topic_vote ) > 0)
-        return;
+    db.collection('topic_votes').count( topic_vote, function(err, count) {
+        // do not allow user to vote twice for the same topic
+        if(0 == count) {
+            db.collection('topic_votes').insert(topic_vote, function(err, topic_vote_){
+            });
+            console.log('user ' + topic_vote.uid + ' voted for topic ' + topic_vote.tid );
+        }
+        
+        // return number of current votes
+        db.collection('topic_votes').count( {tid:topic_vote.tid}, function(err, count) {
+            res.json(count);
+        });
+    });
     
-    // db.collection('topic_votes').insert(topic_vote, function(err, topic_vote){
-    //     //res.json(topic_vote[0]);
-    //     console.log('user voted for topic');
-    // });
 });});
 
 // pads

@@ -32,8 +32,21 @@ h1 {
     margin-bottom: 0.4em;
 }
 
+h2 {
+    font-weight: normal;
+    font-size: 1.3em;
+    margin-bottom: 0.5em;
+}
+
 label {
     font-weight: bold;
+}
+
+hr {
+    height: 0;
+    border-top: none;
+    border-bottom: 1px solid #aaa;
+    margin: 1em 0;
 }
 
 /* ##### input fields, buttons ##### */

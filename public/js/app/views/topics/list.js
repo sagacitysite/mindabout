@@ -39,9 +39,18 @@ define([
                         name: this.$(".topic-name").val(),
                         desc: this.$(".topic-desc").val(),
                     });
-                    topic.save();
-                    topics.add(topic);
+                    topic.save({},
+                        {success: function(model,response,options) {
+                            topic.set(response);
+                            topics.add(topic);
+                        }.bind(this)
+                        });
+                    //topic.save();
+                    //topic.set({status: 0, level: 0, votes: 0}); // FIXME fix code above
+                    //topics.add(topic);
                 }
+                this.$(".lightbox").fadeOut(500);
+                this.render();
             },
             'click .cancel': function(e) {
                 this.$(".lightbox").fadeOut(500);
@@ -56,31 +65,6 @@ define([
         
         onBeforeRender: function() {
             topics.fetch();
-            
-            // itemView.registerHelper("equals", function (a, b) {
-            //     return (a == b);
-            // });
-            
-            // beautify models
-            /*topics.models.forEach( function(topic) {
-                switch(topic.get('status')) {
-                    case 0:
-                        topic.set({'status':'Selection'});
-                        break;
-                    case 1:
-                        topic.set({'status':'Waiting'});
-                        break;
-                    case 2:
-                        topic.set({'status':'Proposal'});
-                        break;
-                    case 3:
-                        topic.set({'status':'Consensus'});
-                        break;
-                    case 4:
-                        topic.set({'status':'Closed'});
-                        break;
-                }
-            });*/
         }
     });
     

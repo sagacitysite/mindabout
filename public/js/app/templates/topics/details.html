@@ -1,0 +1,89 @@
+<div class="box large-box" id="box-topic-details">
+    <h1>{{name}}</h1>
+    
+    <!-- Left Area -->
+    <div id="left-area">
+    
+        <hr/>
+        
+        <h2>Description</h2>
+        <p>{{desc}}</p>
+        
+        <hr/>
+        
+         <!-- #ifis status 3 -->
+        <h2>Groups</h2>
+           
+        <div id="groups">
+            <div id="group-1" class="group"><span>1</span></div>
+            <div id="group-2" class="group"><span>2</span></div>
+            <div id="group-3" class="group"><span>3</span></div>
+            <div id="group-4" class="group"><span>4</span></div>
+            <div id="group-5" class="group"><span>5</span></div>
+            <div id="group-6" class="group"><span>6</span></div>
+            <div id="group-7" class="group"><span>7</span></div>
+            <div id="group-8" class="group"><span>8</span></div>
+        </div>
+        <!-- /ifis -->
+        
+        <hr/>
+        
+        <h2>Discussion</h2>
+        <div id="dis">
+            <div class="section">
+                <div class="user">Carlo</div>
+                <p>Wir sollten dringend weniger Cola trinken! Aber wenn es sein muss, dann wenigstens Cola mit viel Zucker!</p>
+            </div>
+            <div class="section">
+                <div class="user">Patrick</div>
+                <p>Mindestens!</p>
+            </div>
+            <div class="section">
+                <div class="user">Max</div>
+                <p>Und bitte schwarz!</p>
+            </div>
+        </div>
+    
+    </div>
+    
+    <!-- Right Area -->
+    <div id="right-area">
+    
+        <div class="block" id="block-manage">
+            <div class="block-title">
+                <h2>Manage</h2>
+            </div>
+            <div class="block-content">
+                <button class="join">Join</button>
+                <button class="voteup">Vote</button>
+                <button class="merge">Merge</button>
+                <button class="edit">Edit</button>
+                <button class="del">Delete</button>
+            </div>
+        </div>
+        
+        <div class="block" id="block-facts">
+            <div class="block-title">
+                <h2>Facts</h2>
+            </div>
+            <div class="block-content">
+                <ul>
+                    <li>Status: {{status}}</li>
+                    <li>Level: {{level}}</li>
+                    <li>Members: 5 <!-- count members --></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="block" id="block-stats">
+            <div class="block-title">
+                <h2>Statistics</h2>
+            </div>
+            <div class="block-content">
+                
+            </div>
+        </div>
+        
+    </div>
+    
+</div>
