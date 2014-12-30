@@ -10,7 +10,9 @@ curl -sL https://deb.nodesource.com/setup | sudo bash -
 apt-get install -y nodejs
 apt-get install -y npm
 apt-get install -y mongodb
-export PORT=80
+#install node modules
+cd /vagrant
+npm install
 if ! [ -L /var/www ]; then
   rm -rf /var/www
   ln -fs /vagrant /var/www
