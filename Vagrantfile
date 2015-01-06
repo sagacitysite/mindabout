@@ -10,10 +10,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "precise32"
+  config.vm.box = "hashicorp/precise32"
   # Use bootstrap.sh to install all programs in the VM
   config.vm.provision :shell, path: "bootstrap.sh"
-  config.vm.network :forwarded_port, host: 3000, guest: 3000
+  config.vm.network :forwarded_port, host: 3000, guest: 80
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
