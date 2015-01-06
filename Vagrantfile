@@ -14,6 +14,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Use bootstrap.sh to install all programs in the VM
   config.vm.provision :shell, path: "bootstrap.sh"
   config.vm.network :forwarded_port, host: 3000, guest: 80
+  config.vm.network :forwarded_port, host: 9001, guest: 9001
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
