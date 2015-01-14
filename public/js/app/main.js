@@ -11,6 +11,7 @@
       BackboneRouteFilter: '../vendor/backbone.routefilter.min',
       Marionette: '../vendor/backbone.marionette.min',
       handlebars: '../vendor/handlebars',
+      ember: '../vendor/ember.min',
       Session: 'models/session',
       User: 'models/user'
     },

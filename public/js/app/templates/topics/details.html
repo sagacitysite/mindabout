@@ -1,18 +1,23 @@
 <div class="box large-box" id="box-topic-details">
-    <h1>{{name}}</h1>
+    <!--<h1>{{name}}</h1>-->
+    <h1>Topic name</h1>
+    <hr/>
     
     <!-- Left Area -->
     <div id="left-area">
-    
-        <hr/>
         
         <h2>Description</h2>
-        <p>{{desc}}</p>
+        <!--<p>{{desc}}</p>-->
+        
+        <!-- Blindtext -->
+        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.</p>
+        <p>Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a,</p>
+        <!-- // -->
         
         <hr/>
         
          <!-- #ifis status 3 -->
-        <h2>Groups</h2>
+        <h2>Groups in current level</h2>
            
         <div id="groups">
             <div id="group-1" class="group"><span>1</span></div>
@@ -54,7 +59,7 @@
                 <h2>Manage</h2>
             </div>
             <div class="block-content">
-                <button class="join"><span>Join</span></button>
+                <button class="join{{#if joined}} joined{{/if}}"><span>{{#if joined}}Joined{{else}}Join{{/if}}</span></button>
                 <button class="voteup{{#if voted}} voted{{/if}}"><span>{{#if voted}}Voted{{else}}Vote{{/if}}</span></button>
                 <button class="merge"><span>Merge</span></button>
                 <button class="edit"><span>Edit</span></button>
@@ -62,18 +67,22 @@
             </div>
         </div>
         
+        <hr/>
+        
         <div class="block" id="block-facts">
             <div class="block-title">
-                <h2>Facts</h2>
+                <h2>Details</h2>
             </div>
             <div class="block-content">
                 <ul>
+                    <li>Members: 220 <!-- count members --></li>
                     <li>Status: {{status}}</li>
                     <li>Level: {{level}}</li>
-                    <li>Members: 5 <!-- count members --></li>
                 </ul>
             </div>
         </div>
+        
+        <hr/>
         
         <div class="block" id="block-stats">
             <div class="block-title">

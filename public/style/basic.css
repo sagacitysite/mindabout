@@ -6,7 +6,7 @@
 body {
     padding: 0;
     font-family: 'Roboto', sans-serif;
-    font-size: 1em;
+    font-size: 0.9em;
     font-weight: 300;
     background-color: #f8f8f8;
 }
@@ -30,7 +30,7 @@ ul {
 }
 
 h1,h2,h3,h4,h5,h6,strong {
-    font-weight: 500;
+    font-weight: 400;
 }
 
 label {
@@ -40,21 +40,21 @@ label {
 }
 
 h1 {
-    font-size: 1.3em;
+    font-size: 1.4em;
     margin-bottom: 0.4em;
 }
 
 h2 {
-    font-weight: normal;
     font-size: 1.3em;
     margin-bottom: 0.5em;
 }
 
 hr {
     height: 0;
-    border-top: none;
-    border-bottom: 1px solid #aaa;
-    margin: 1em 0;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    margin: 0.8em 0;
+    clear: both;
 }
 
 /* ##### input fields, buttons ##### */
@@ -75,19 +75,15 @@ textarea {
 }
 
 input[type=text]:hover,
+input[type=text]:focus,
 input[type=email]:hover,
+input[type=email]:focus,
 input[type=password]:hover,
-textarea:hover {
+input[type=password]:focus,
+textarea:hover,
+textarea:focus {
     box-shadow: 0 0 2px #4b0082;
     background-color: #fbfbfb;
-}
-
-input[type=text]:focus,
-input[type=email]:focus,
-input[type=password]:focus,
-textarea:focus {
-    box-shadow: 0 0 4px #4b0082;
-    background-color: #f8f8f8;
 }
 
 input[type=submit],button,a.btn {
@@ -95,9 +91,10 @@ input[type=submit],button,a.btn {
     font-size: 0.9em;
     font-family: inherit;
     font-weight: 300;
+    text-align: left;
     border: 1px solid #ccc;
     padding: 0.3em 0.6em;
-    margin: 0 0.2em 0.2em 0;
+    margin: 0 0.2em 0.4em 0;
     background: #ddd url('../img/button.png') repeat-x left top;
     cursor: pointer;
     box-shadow: 0 0 2px 0 rgba(0,0,0,0.2);
@@ -107,7 +104,7 @@ input[type=submit] span,
 button span,
 a.btn span {
     display: block;
-    padding-left: 20px;
+    padding-left: 22px;
     background-repeat: no-repeat;
     background-position: left center;
 }

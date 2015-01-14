@@ -11,6 +11,8 @@
     position: relative;
 }
 
+/* ##### H E A D E R ##### */
+
 #header {
     position: fixed;
     display: block;
@@ -67,6 +69,8 @@
 #toolbar #noti-reput { background-image: url('../img/ico_reput.png'); }
 #toolbar #settings { background-image: url('../img/ico_settings.png'); }
 
+/* ##### N A V I G A T I O N ##### */
+
 #navigation {
     position: fixed;
     top: 90px;
@@ -96,6 +100,12 @@
     border-top: 1px solid #888;
     z-index: 1;
 }
+
+#navigation li a:hover {
+    background-color: #6D6D6D;
+}
+
+/* ##### C O N T E N T ##### */
 
 #content {
     position: relative;
@@ -146,6 +156,25 @@ table .cell-center {
 table .cell-right {
     text-align: right;
 }
+
+/* 2column-Style */
+
+#left-area {
+    float: left;
+    width: 570px;
+    margin-right: 30px;
+}
+
+#right-area {
+    float: left;
+    width: 200px;
+}
+
+.block {
+    margin-bottom: 1em;
+}
+
+/* ##### F O O T E R ##### */
 
 /*#footer {
     clear: both;

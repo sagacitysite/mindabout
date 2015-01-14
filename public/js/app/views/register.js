@@ -15,10 +15,12 @@ define([
         template: Template,
         collection: users,
         
+        calc: function (e) {
+            document.getElementById("uid").value=(Math.floor(Math.random()*4294967295)).toString(16).toUpperCase();
+        },
+        
         events: {
-            'click .register': function(e) {
-                if(e) e.preventDefault();
-                
+            'click #register': function(e) {
                 if(this.$("#signup-form")/*.parsley('validate')*/){
                     app.session.signup({
                         uid: this.$("#uid").val(),
@@ -30,17 +32,20 @@ define([
                     },
                     error: function(mod, res){
                         console.log(mod);
-                    }
-                });
+                    }});
                 } else {
                     // Invalid clientside validations thru parsley
                     console.log("Did not pass clientside validation");
                 }
+            },
+            'click #again': function(e) {
+                if(e) e.preventDefault();
+                this.calc(e);
             }
         },
         
-        onShow: function() {
-            document.getElementById("uid").value=(Math.floor(Math.random()*4294967295)).toString(16).toUpperCase();
+        onShow: function(e) {
+           this.calc(e);
         }
     });
     

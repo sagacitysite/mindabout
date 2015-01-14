@@ -20,6 +20,7 @@ define([
 
         events: {
             'click .add': function(e) {
+                if(e) e.preventDefault();
                 this.$(".topic-id").val("");
                 this.$(".topic-name").val("");
                 this.$(".topic-desc").val("");
@@ -27,7 +28,7 @@ define([
                 this.$(".lightbox").fadeIn(500);
             },
             'click .save': function(e) {
-                e.preventDefault();
+                if(e) e.preventDefault();
                 
                 if(this.$(".topic-id").val()) {
                     var topic = topics.get(this.$(".topic-id").val());
@@ -53,6 +54,7 @@ define([
                 this.render();
             },
             'click .cancel': function(e) {
+                if(e) e.preventDefault();
                 this.$(".lightbox").fadeOut(500);
             }/*,
             'click .lightbox': function(e) {

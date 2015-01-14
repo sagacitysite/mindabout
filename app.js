@@ -2,6 +2,14 @@
 /**
  * Module dependencies.
  */
+ 
+// cookie config
+var config = {
+    port: 3000,
+    sessionSecret: 'bb-login-secret',
+    cookieSecret: 'bb-login-secret',
+    cookieMaxAge: (1000 * 60 * 60 * 24 * 365)
+}
 
 var express = require('express');
 var favicon = require('serve-favicon');
@@ -12,14 +20,15 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var errorHandler = require('errorhandler');
 var http = require('http');
-var cookieSession = require('cookie-session');
+var cookieParser = require('cookie-parser');
+//var cookieSession = require('cookie-session');
 
 var _ = require('underscore');
 var bcrypt = require('bcrypt');
 var path = require('path');
 //var mongodb = require('mongodb');
 var mongoskin = require('mongoskin');
-var db = mongoskin.db(process.env.IP, { database: 'mindabout' });
+var db = mongoskin.db('mongodb://'+process.env.IP+'/mindabout');
 var app = express();
 
 // all environments
@@ -29,10 +38,12 @@ app.set('view engine', 'hbs');
 
 app.use(favicon('public/img/favicon.ico'));
 app.use(logger('dev'));
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(methodOverride());
-app.use(cookieSession('secret'));
-app.use(session());
+app.use(cookieParser('secret'));
+//app.use(cookieSession('secret'));
+app.use(session({ secret: 'secret', key: 'uid', cookie: { secure: true }}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 /*// TODO use http://passportjs.org/guide/basic-digest/ ?
@@ -49,17 +60,6 @@ passport.use(new DigestStrategy({ qop: 'auth' },
     done(null, true)
   }
 ));*/
-
-// cookie config
-var config = {
-    port: 3000,
-    sessionSecret: 'bb-login-secret',
-    cookieSecret: 'bb-login-secret',
-    cookieMaxAge: (1000 * 60 * 60 * 24 * 365)
-}
-// FIXME below
-//app.use( express.cookieParser( config.cookieSecret ) );           // populates req.signedCookies
-//app.use( express.cookieSession( config.sessionSecret ) );         // populates req.session, needed for CSRF
 
 function clean_user_data(user) {
     return _.omit(user, ['upw', 'auth_token']);
@@ -78,6 +78,8 @@ function count_votes(tid_) {
 
 // auth to encapsulate, e.g. app.get('/json/pads', auth(req,res,function(req, res) ...
 function auth(req, res, next) {
+    //console.log(req.signedCookies.uid);
+    
     db.collection('users').findOne({ uid: req.signedCookies.uid, auth_token: req.signedCookies.auth_token }, function(err, user){
         if(user){
             console.log('User authentication valid ' + JSON.stringify(user));
@@ -250,8 +252,10 @@ app.post("/json/auth/signup", function(req, res){
     
     // url: https://www.npmjs.org/package/bcrypt-nodejs
     db.collection('users').insert(user, function(err, user){
+
+        // get first element
         user = user[0];
-        
+
         if(err){
             res.json({ error: "Error while trying to register user " + JSON.stringify(user) });
             console.log(err);

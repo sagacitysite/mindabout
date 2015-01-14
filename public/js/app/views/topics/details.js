@@ -16,11 +16,10 @@ define([
         model: Topic,
         
         events: {
-            'click .del': function() {
+            'click .del': function(e) {
                 this.model.destroy();
             },
             'click .voteup': function(e) {
-                e.preventDefault();
                 $.post('/json/topic-vote',
                        {'tid':this.model.get('_id')},
                        function(data,status) {
@@ -29,7 +28,7 @@ define([
                        }.bind(this));
             },
             'click .join': function(e) {
-                e.preventDefault();
+                
             },
             'click .edit': function(e) {
                 $(".topic-id").val(this.model.get('_id'));
