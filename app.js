@@ -100,11 +100,10 @@ function auth(req, res, next) {
 
 app.get('/json/topics', function(req, res) { auth(req, res, function(req, res) {
     db.collection('topics').find().toArray(function(err, topics) {
-       console.log('get1'); 
+       
         _.each(topics,function(topic) {
             _.extend(topic,{votes: 5});//count_votes(topic._id)});
         });
-        console.log('get2'); 
 
         res.json(topics); // TODO get votes from table
         console.log('get topics');

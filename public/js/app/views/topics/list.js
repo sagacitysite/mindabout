@@ -11,12 +11,10 @@ define([
     Model,
     Collection
     ) {
-    var model = new Model();
     var topics = new Collection();
     
     var View = Marionette.CompositeView.extend({
         template: Template,
-        model: model,
         collection: topics,
         
         childView: ChildView,
