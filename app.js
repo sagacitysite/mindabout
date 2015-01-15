@@ -174,30 +174,6 @@ app.post('/json/topic-vote', function(req, res) { auth(req, res, function(req, r
 // get group by id
 
 // ###################
-// ###   P A D S   ###
-// ###################
-
-app.get('/json/pads', function(req, res) { auth(req, res, function(req, res) {
-    db.collection('pads').find().toArray(function(err, pads) {
-        res.json(pads);
-        console.log('get pads');
-    });
-});});
-
-app.post('/json/pad', function(req, res) { auth(req, res, function(req, res) {
-    var pad = req.body;
-    db.collection('pads').insert(pad, function(err, pad){
-        res.json(pad[0]);
-    });
-});});
-
-app.delete('/json/pad/:id', function(req, res) { auth(req, res, function(req,res) {
-    db.collection('pads').removeById(req.params.id, function() {
-        res.json({deleted: true});
-    });
-});});
-
-// ###################
 // ###   A U T H   ###
 // ###################
 
