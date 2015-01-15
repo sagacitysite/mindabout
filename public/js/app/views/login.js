@@ -34,7 +34,6 @@ define([
     
         events: {
             'keypress #upw': function(e) {
-                if(e) e.preventDefault();
                 if (e.which == 13) {
                     this.login(e);
                 }

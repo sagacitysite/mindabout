@@ -2,22 +2,26 @@ define([
     'Marionette',
     'hbs!templates/topics/list',
     'views/topics/list-item',
+    'models/topic',
     'collections/topics'
     ], function(
     Marionette,
     Template,
-    ItemView,
+    ChildView,
+    Model,
     Collection
     ) {
+    var model = new Model();
     var topics = new Collection();
     
     var View = Marionette.CompositeView.extend({
         template: Template,
+        model: model,
         collection: topics,
         
-        itemView: ItemView,
-        itemViewContainer: '.topic-list',
-
+        childView: ChildView,
+        childViewContainer: '.topic-list',
+        
         events: {
             'click .add': function(e) {
                 if(e) e.preventDefault();

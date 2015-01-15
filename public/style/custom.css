@@ -14,11 +14,12 @@
     width: 80px;
 }
 
-#content .edit span { background-image: url('../img/edit.png'); }
-#content .del span { background-image: url('../img/del.png'); }
+
+#content .edit { background-image: url('../img/edit.png'); }
+#content .del { background-image: url('../img/del.png'); }
 #content .join span { background-image: url('../img/participate.png'); }
 #content .voteup span { background-image: url('../img/vote.png'); }
-#content .merge span { background-image: url('../img/merge.png'); }
+#content .merge { background-image: url('../img/merge.png'); }
 
 #content .join.joined,
 #content .voteup.voted {
