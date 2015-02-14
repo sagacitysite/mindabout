@@ -65,15 +65,10 @@ function clean_user_data(user) {
     return _.omit(user, ['upw', 'auth_token']);
 }
 
-function count_votes(tid_) {
-    var result;
-    var test = db.collection('topic_votes').count( {tid:tid_}, function(err, count) {
-        console.log(count);
-        result = count;
+function count_votes(response,tid_) {
+    db.collection('topic_votes').count( {tid:tid_}, function(err, count) {
+        response.send(count.toString());
     });
-    
-    console.log(test);
-    return result;
 }
 
 // auth to encapsulate, e.g. app.get('/json/pads', auth(req,res,function(req, res) ...
@@ -98,15 +93,36 @@ function auth(req, res, next) {
 // ### T O P I C S ###
 // ###################
 
+function extendTopicInfo(topic,uid_,finished) {
+        // count number of votes for this topic
+        var tid_ = topic._id.toString();
+        db.collection('topic_votes').count( {tid:tid_}, function(err, count) {
+            _.extend(topic,{votes:count});
+            
+            // check if user has voted for topic
+            db.collection('topic_votes').count(
+                {tid:tid_, uid:uid_},
+                function(err, count) {
+                    _.extend(topic,{voted:count});
+                    finished(topic);
+                });
+        });
+}
+
 app.get('/json/topics', function(req, res) { auth(req, res, function(req, res) {
     db.collection('topics').find().toArray(function(err, topics) {
        
-        _.each(topics,function(topic) {
-            _.extend(topic,{votes: 5});//count_votes(topic._id)});
+        console.log('get topics');
+
+        // send response only if all queries have completed
+        var finished = _.after(topics.length, function(topic) {
+            res.json(topics);
         });
 
-        res.json(topics); // TODO get votes from table
-        console.log('get topics');
+        // loop over all topics        
+        _.each(topics,function(topic) {
+            extendTopicInfo(topic,req.signedCookies.uid,finished);
+        });
     });
     
 });});
@@ -128,11 +144,19 @@ app.put('/json/topic/:id', function(req, res) { auth(req, res, function(req, res
     
 });});
 
+app.get('/json/topic/:id', function(req, res) { auth(req, res, function(req, res) {
+    var ObjectId = require('mongodb').ObjectID;
+    db.collection('topics').findOne({ _id:ObjectId(req.params.id) }, function(err, topic) {
+        extendTopicInfo(topic,req.signedCookies.uid,function(topic) {res.json(topic);});
+    });
+});});
+
 app.post('/json/topic', function(req, res) { auth(req, res, function(req, res) {
     var topic = req.body;
-    
-    topic.status = 0;
+
+    topic.stage = 0;
     topic.level = 0;
+    topic.timeCreated = new Date();
     db.collection('topics').insert(topic, function(err, topic){
         res.json(topic[0]);
         console.log('new topic');
@@ -155,16 +179,27 @@ app.post('/json/topic-vote', function(req, res) { auth(req, res, function(req, r
     db.collection('topic_votes').count( topic_vote, function(err, count) {
         // do not allow user to vote twice for the same topic
         if(0 == count) {
-            db.collection('topic_votes').insert(topic_vote, function(err, topic_vote_){
+            db.collection('topic_votes').insert(topic_vote, function(err, topic_vote_) {
+                // return number of current votes
+                count_votes(res,topic_vote.tid);
             });
             console.log('user ' + topic_vote.uid + ' voted for topic ' + topic_vote.tid );
-        }
-        
-        // return number of current votes
-        //console.log(count_votes(topic_vote.tid));
-        res.json(count_votes(topic_vote.tid));
+        } else
+            // return number of current votes
+            count_votes(res,topic_vote.tid);
     });
     
+});});
+
+app.post('/json/topic-unvote', function(req, res) { auth(req, res, function(req, res) {
+    var topic_vote = req.body;
+    
+    // get user name and put into vote
+    topic_vote['uid'] = req.signedCookies.uid;
+    // remove entry
+    db.collection('topic_votes').remove(topic_vote,true,function(vote,err){});
+    // return number of current votes
+    count_votes(res,topic_vote.tid);
 });});
 
 // ###################

@@ -18,7 +18,7 @@ define([
         collection: topics,
         
         childView: ChildView,
-        childViewContainer: '.topic-list',
+        childViewContainer: '#topic-list',
         
         events: {
             'click .add': function(e) {

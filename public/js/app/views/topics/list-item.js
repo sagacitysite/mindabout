@@ -7,22 +7,39 @@ define([
     ) {
     var View = Marionette.ItemView.extend({
         template: Template,
-        tagName: 'tr',
+        tagName: 'div',
+        className: 'topic-item',
         
         events: {
             'click .del': function() {
                 this.model.destroy();
             },
-            'click .voteup': function(e) {
+            // toggle vote
+            'click .vote': function(e) {
+                e.stopPropagation();
                 e.preventDefault();
-                $.post('/json/topic-vote',
-                       {'tid':this.model.get('_id')},
-                       function(data,status) {
-                           this.model.set('votes',data);
-                           this.render();
-                       }.bind(this));
+                
+                if(this.model.get('voted')) {
+                    // if we have already voted then unvote
+                    $.post('/json/topic-unvote',
+                           {'tid':this.model.get('_id')},
+                           function(data,status) {
+                               this.model.set('votes',data);
+                               this.model.set('voted',0);
+                               this.render();
+                           }.bind(this));
+                } else {
+                    $.post('/json/topic-vote',
+                           {'tid':this.model.get('_id')},
+                           function(data,status) {
+                               this.model.set('votes',data);
+                               this.model.set('voted',1);
+                               this.render();
+                           }.bind(this));
+                }
             },
             'click .participate': function(e) {
+                e.stopPropagation();
                 e.preventDefault();
             },
             'click .edit': function(e) {
@@ -44,7 +61,19 @@ define([
                 this.$(".lightbox").fadeOut(500);
                 this.$(".topic-name").val("");
                 this.$(".topic-desc").val("");
+            },
+            'click .link': function(e) {
+                window.location.href='/#/topic/'+this.model.get('_id');
             }
+        },
+        
+        formatDate: function(rawDate) {
+            var date = new Date(rawDate);
+            var y = date.getFullYear();
+            var m = date.getMonth();
+            var  d = date.getDate();
+            var newDate = d+"-"+m+"-"+y;
+            return newDate;
         },
         
         initialize: function() {
@@ -55,6 +84,7 @@ define([
                     return opts.inverse(this);
                 }
             });
+            this.model.set('formattedDate', this.formatDate(this.model.get('timeCreated')));
         }
     });
     

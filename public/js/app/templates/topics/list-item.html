@@ -1,22 +1,28 @@
-<td><button class="join{{#if joined}} joined{{/if}}" title="join this topic"><span>{{#if joined}}Joined{{else}}Join{{/if}}</span></button></td>
-<td>
+<div class="progress"></div>
+
+<div class="link">
+
+<div class="right-pos">
     {{#ifis status 0}}
-        <button class="voteup{{#if voted}} voted{{/if}}" title="vote for this topic"><span>Vote ({{votes}})</span></button>
+    <div class="buttons">
+        <button class="ico join{{#if joined}} joined{{/if}}" title="{{#if joined}}leave{{else}}join{{/if}}"><span></span></button>
+        <button class="ico vote{{#if voted}} voted{{/if}}" title="{{#if joined}}unvote{{else}}vote{{/if}}"><span></span></button>
+    </div>
     {{else}}
-        <span>{{votes}}</span>
+    <div class="time-remaining">
+        <div>Completion of {{#ifis status 1}}proposal stage{{else}}level {{level}}{{/ifis}} in:</div>
+        <div>{{time-remaining}}</div>
+    </div>
     {{/ifis}}
-</td>
-<td title="{{desc}}"><a href="/#/topic/{{_id}}">{{name}}</a></td>
-<!--<td title="{{desc}}"><a href="/#/topic">{{name}}</a></td>-->
-<!--<td>{{desc}}</td>-->
-<td>
-    {{#ifis status 0}}Selection{{/ifis}}
-    {{#ifis status 1}}Waiting{{/ifis}}
-    {{#ifis status 2}}Proposal{{/ifis}}
-    {{#ifis status 3}}Consensus{{/ifis}}
-    {{#ifis status 4}}Closed{{/ifis}}
-</td>
-<td class="cell-center">{{level}}</td>
-<!--<td>{{doc}}</td>-->
-<td><a class="ico edit" title="edit"><span>edit</span></a></td>
-<td><a class="ico del" title="delete"><span>delete</span></a></td>
+</div>
+
+<div>
+    <div class="name">{{name}} <span class="del">X</span></div>
+    <div class="stats">
+        {{#ifis status 0}}created: {{formattedDate}}{{else}}started: {{proposal-date}}{{/ifis}},
+        {{#ifis status 0}}{{votes}} votes{{/ifis}},
+        {{participants}} participants
+    </div>
+</div>
+
+</div>
