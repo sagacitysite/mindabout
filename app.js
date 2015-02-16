@@ -94,19 +94,33 @@ function auth(req, res, next) {
 // ###################
 
 function extendTopicInfo(topic,uid_,finished) {
-        // count number of votes for this topic
-        var tid_ = topic._id.toString();
-        db.collection('topic_votes').count( {tid:tid_}, function(err, count) {
-            _.extend(topic,{votes:count});
-            
-            // check if user has voted for topic
-            db.collection('topic_votes').count(
-                {tid:tid_, uid:uid_},
-                function(err, count) {
-                    _.extend(topic,{voted:count});
-                    finished(topic);
-                });
-        });
+    
+    // extend stage name
+    switch (topic.stage) {
+        case 0:
+            topic.stageName = "selection";
+            break;
+        case 1:
+            topic.stageName = "proposal";
+            break;
+        case 2:
+            topic.stageName = "consensus";
+            break;
+    }
+    
+    // extend number of votes for this topic
+    var tid_ = topic._id.toString();
+    db.collection('topic_votes').count( {tid:tid_}, function(err, count) {
+        _.extend(topic,{votes:count});
+        
+        // check if user has voted for topic
+        db.collection('topic_votes').count(
+            {tid:tid_, uid:uid_},
+            function(err, count) {
+                _.extend(topic,{voted:count});
+                finished(topic);
+            });
+    });
 }
 
 app.get('/json/topics', function(req, res) { auth(req, res, function(req, res) {
@@ -144,10 +158,68 @@ app.put('/json/topic/:id', function(req, res) { auth(req, res, function(req, res
     
 });});
 
+function createGroups(topic) {
+    var groupSize = 5;
+    
+    // count proposals
+    db.collection('proposals').count( { tid:topic.tid }, function(err, numProposals) {
+        // compute number of groups
+        var numGroups = numProposals/groupSize;
+        
+        for(var i=0; i<numGroups; ++i)
+            ;
+            
+        // create groups
+        db.collection('proposals').find( { tid:topic.tid }, function(err, proposal) {
+            // select group randomly
+            var gid = 0;
+            
+            db.collection('proposals').count( { gid:topic.tid }, function(err, numProposals) {
+            });
+        });
+    });
+}
+
+function manageTopicState(topic) {
+    // Date(year, month, day, hour, minute, second, millisecond);
+    var oneWeek = new Date(0,0,7,0,0,0,0);
+    var selectionSpan = oneWeek;
+    var proposalSpan = oneWeek;
+    var consensusSpan = oneWeek;
+    //var completedSpan = oneWeek;
+    
+    // exit this funtion if stage transition is not due yet
+    if(Date.now()<topic.nextStageDeadline)
+        return;
+    
+    // move to next stage
+    switch (topic.stage) {
+        case 0: // we are currently in selection stage
+            topic.nextStageDeadline += proposalSpan;
+            ++topic.stage;
+            break;
+        case 1: // we are currently in proposal stage
+            topic.nextStageDeadline += consensusSpan;
+            ++topic.stage;
+            createGroups(topic);
+            break;
+        case 2: // we are currently in consensus stage
+            ++topic.stage;
+            break;
+    }
+    
+    // update database
+    var ObjectId = require('mongodb').ObjectID;
+    db.collection('topics').update(
+        { _id: ObjectId(topic._id) },
+        { $set: {stage: topic.stage, nextStageDeadline: topic.nextStageDeadline } }, {}); // FIXME
+}
+
 app.get('/json/topic/:id', function(req, res) { auth(req, res, function(req, res) {
     var ObjectId = require('mongodb').ObjectID;
     db.collection('topics').findOne({ _id:ObjectId(req.params.id) }, function(err, topic) {
         extendTopicInfo(topic,req.signedCookies.uid,function(topic) {res.json(topic);});
+        manageTopicState(topic);
     });
 });});
 
@@ -176,10 +248,11 @@ app.post('/json/topic-vote', function(req, res) { auth(req, res, function(req, r
     // get user name and put into vote
     topic_vote['uid'] = req.signedCookies.uid;
     
+    // TODO use findAndModify as in proposal
     db.collection('topic_votes').count( topic_vote, function(err, count) {
         // do not allow user to vote twice for the same topic
         if(0 == count) {
-            db.collection('topic_votes').insert(topic_vote, function(err, topic_vote_) {
+            db.collection('topic_votes').insert(topic_vote, function(err, topic_vote) {
                 // return number of current votes
                 count_votes(res,topic_vote.tid);
             });
@@ -197,16 +270,50 @@ app.post('/json/topic-unvote', function(req, res) { auth(req, res, function(req,
     // get user name and put into vote
     topic_vote['uid'] = req.signedCookies.uid;
     // remove entry
-    db.collection('topic_votes').remove(topic_vote,true,function(vote,err){});
-    // return number of current votes
-    count_votes(res,topic_vote.tid);
+    db.collection('topic_votes').remove(topic_vote,true,
+        function(vote,err) {
+            // return number of current votes
+            count_votes(res,topic_vote.tid);
+        });
+});});
+
+// #########################
+// ### P R O P O S A L S ###
+// #########################
+app.get('/json/proposal/:id', function(req, res) { auth(req, res, function(req, res) {
+    // from http://stackoverflow.com/questions/16358857/mongodb-atomic-findorcreate-findone-insert-if-nonexistent-but-do-not-update
+    var ObjectId = require('mongodb').ObjectID;
+    db.collection('proposals').findAndModify({
+            query: { tid:ObjectId(req.params.id), uid:req.signedCookies.uid },
+            update: {
+              $setOnInsert: { url: process.env.IP+"/test" }
+            },
+            new: true,
+            upsert: true
+        },
+        function(err, proposal) {
+            res.location(proposal.url);
+        });
 });});
 
 // ###################
 // ### G R O U P S ###
 // ###################
 
+app.get('/json/groups', function(req, res) { auth(req, res, function(req, res) {
+    db.collection('groups').find().toArray(function(err, groups) {
+        console.log('get groups');
+        res.json(groups);
+    });
+});});
+
 // get group by id
+app.get('/json/group/:id', function(req, res) { auth(req, res, function(req, res) {
+    var ObjectId = require('mongodb').ObjectID;
+    db.collection('groups').findOne({ _id:ObjectId(req.params.id) }, function(err, group) {
+        res.json(group);
+    });
+});});
 
 // ###################
 // ###   A U T H   ###
@@ -219,7 +326,8 @@ app.get("/json/auth", function(req, res){
         if(user){
             res.json({ user: clean_user_data(user) });
         } else {
-            res.json({ error: "Client has no valid login cookies."  });   
+            //res.json({ error: "Client has no valid login cookies."  });
+            res.redirect("/#/");
         }
     });
 });
@@ -241,14 +349,16 @@ app.post("/json/auth/login", function(req, res){
 
             } else {
                 // Username did not match password given
-                res.json({ error: "Invalid username or password."  });   
-                
+                //res.json({ error: "Invalid username or password."  });   
+                res.redirect("/#/");
+
                 console.log('Userpassword invalid ' + JSON.stringify(user));
             }
         } else {
             // Could not find the username
-            res.json({ error: "Username does not exist."  });   
-            
+            //res.json({ error: "Username does not exist."  });   
+            res.redirect("/#/");
+
             console.log('Username invalid ' + JSON.stringify(req.body.uid));
         }
     });
