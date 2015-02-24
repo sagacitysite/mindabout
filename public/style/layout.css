@@ -21,7 +21,7 @@
     background: #fff url("../img/logo.png") 1em center no-repeat;
     border-bottom: 1px solid #ccc;
     padding: 20px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    /*box-shadow: 0 0 5px rgba(0,0,0,0.5);*/
     z-index: 100;
 }
 

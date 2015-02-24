@@ -1,21 +1,31 @@
-<div class="box large-box" id="box-topic-details">
+<div class="box large-box" id="topic-details">
+    
+    <div class="right-pos">
+        <button class="ico join{{#if joined}} joined{{/if}}" title="{{#if joined}}leave{{else}}join{{/if}}"><span></span></button>
+        <button class="ico vote{{#if voted}} voted{{/if}}" title="{{#if joined}}unvote{{else}}vote{{/if}}"><span></span></button>
+        <button class="ico merge" title="merge request"><span></span></button>
+        <button class="ico edit" title="edit"><span></span></button>
+        <button class="ico del" title="delete"><span></span></button>
+    </div>
+    
     <h1>{{name}}</h1>
+    
+    <div class="sub-info">
+        <span>{{stageName}}{{#ifis stage 2}} in level{{level}}{{/ifis}}, next {{#ifis stage 2}}level{{else}}stage{{/ifis}} in xx.xx:xx:xx</span>
+    </div>
+    
     <hr/>
     
     <!-- Left Area -->
     <div id="left-area">
         
         <h2>Description</h2>
-        <!--<p>{{desc}}</p>-->
+        <div class="desc">{{desc}}</div>
+        <div class="open-desc"><span>more</span></div>
         
-        <!-- Blindtext -->
-        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.</p>
-        <p>Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a,</p>
-        <!-- // -->
+        <!--<hr/>
         
-        <hr/>
-        
-         <!-- #ifis status 3 -->
+         #ifis status 3 
         <h2>Groups in current level</h2>
            
         <div id="groups">
@@ -28,11 +38,17 @@
             <div id="group-7" class="group"><span>7</span></div>
             <div id="group-8" class="group"><span>8</span></div>
         </div>
-        <!-- /ifis -->
+        /ifis -->
         
-        <hr/>
+        <!--<h2>Background</h2>
+           
+        <div id="references">
+            
+        </div>
         
-        <h2>Discussion</h2>
+        <hr/>-->
+        
+        <!--<h2>Discussion</h2>
         <div id="dis">
             <div class="section">
                 <div class="user">Carlo</div>
@@ -46,39 +62,19 @@
                 <div class="user">Max</div>
                 <p>Und bitte schwarz!</p>
             </div>
-        </div>
+        </div>-->
     
     </div>
     
     <!-- Right Area -->
     <div id="right-area">
-    
-        <div class="block" id="block-manage">
+        
+        <div class="block" id="block-stats">
             <div class="block-title">
-                <h2>Manage</h2>
+                <h2>Proposal</h2>
             </div>
             <div class="block-content">
-                <button class="join{{#if joined}} joined{{/if}}"><span>{{#if joined}}Joined{{else}}Join{{/if}}</span></button>
-                <button class="voteup{{#if voted}} voted{{/if}}"><span>{{#if voted}}Voted{{else}}Vote{{/if}}</span></button>
-                <button class="merge"><span>Merge</span></button>
-                <button class="edit"><span>Edit</span></button>
-                <button class="del"><span>Delete</span></button>
-            </div>
-        </div>
-        
-        <hr/>
-        
-        <div class="block" id="block-facts">
-            <div class="block-title">
-                <h2>Details</h2>
-            </div>
-            <div class="block-content">
-                <ul>
-                    <li>Votes: {{votes}}</li>
-                    <li>Members: 220 <!-- count members --></li>
-                    <li>Stage: {{stage}}</li>
-                    <li>Level: {{level}}</li>
-                </ul>
+                Your proposal und edit
             </div>
         </div>
         
@@ -89,7 +85,10 @@
                 <h2>Statistics</h2>
             </div>
             <div class="block-content">
-                
+                <ul>
+                    <li>Votes: {{votes}}</li>
+                    <li>Members: 220 <!-- count members --></li>
+                </ul>
             </div>
         </div>
         

@@ -3,24 +3,24 @@
 <div class="link">
 
 <div class="right-pos">
-    {{#ifis status 0}}
+    {{#ifis stage 0}}
     <div class="buttons">
         <button class="ico join{{#if joined}} joined{{/if}}" title="{{#if joined}}leave{{else}}join{{/if}}"><span></span></button>
         <button class="ico vote{{#if voted}} voted{{/if}}" title="{{#if joined}}unvote{{else}}vote{{/if}}"><span></span></button>
     </div>
     {{else}}
     <div class="time-remaining">
-        <div>Completion of {{#ifis status 1}}proposal stage{{else}}level {{level}}{{/ifis}} in:</div>
-        <div>{{time-remaining}}</div>
+        <div>Completion of {{#ifis stage 1}}proposal stage{{else}}level {{level}}{{/ifis}} in</div>
+        <div>{{timeRemaining}}</div>
     </div>
     {{/ifis}}
 </div>
 
 <div>
-    <div class="name">{{name}} <span class="del">X</span></div>
+    <div class="name">{{name}}</div>
     <div class="stats">
-        {{#ifis status 0}}created: {{formattedDate}}{{else}}started: {{proposal-date}}{{/ifis}},
-        {{#ifis status 0}}{{votes}} votes{{/ifis}},
+        {{#ifis stage 0}}created: {{formattedDate}}{{else}}started: {{proposal-date}}{{/ifis}}
+        {{#ifis stage 0}}, {{votes}} votes{{/ifis}},
         {{participants}} participants
     </div>
 </div>
