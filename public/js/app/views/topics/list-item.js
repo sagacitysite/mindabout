@@ -14,6 +14,30 @@ define([
             'click .del': function() {
                 this.model.destroy();
             },
+            // toggle join
+            'click .join': function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                
+                if(this.model.get('joined')) {
+                    // if we have already joined then unjoin (leave again)
+                    $.post('/json/topic-unjoin',
+                           {'tid':this.model.get('_id')},
+                           function(data,status) {
+                               this.model.set('participants',data);
+                               this.model.set('joined',0);
+                               this.render();
+                           }.bind(this));
+                } else {
+                    $.post('/json/topic-join',
+                           {'tid':this.model.get('_id')},
+                           function(data,status) {
+                               this.model.set('participants',data);
+                               this.model.set('joined',1);
+                               this.render();
+                           }.bind(this));
+                }
+            },
             // toggle vote
             'click .vote': function(e) {
                 e.stopPropagation();

@@ -8,7 +8,7 @@ var config = {
     port: 3000,
     sessionSecret: 'bb-login-secret',
     cookieSecret: 'bb-login-secret',
-    cookieMaxAge: (1000 * 60 * 60 * 24 * 365)
+    cookieMaxAge: (1000 * 60 * 60 * 24 * 36)
 }
 
 var express = require('express');
@@ -71,6 +71,12 @@ function count_votes(response,tid_) {
     });
 }
 
+function count_participants(response,tid_) {
+    db.collection('topic_participants').count( {tid:tid_}, function(err, count) {
+        response.send(count.toString());
+    });
+}
+
 // auth to encapsulate, e.g. app.get('/json/pads', auth(req,res,function(req, res) ...
 function auth(req, res, next) {
     //console.log(req.signedCookies.uid);
@@ -108,8 +114,8 @@ function extendTopicInfo(topic,uid_,finished) {
             break;
     }
     
-    // extend number of votes for this topic
     var tid_ = topic._id.toString();
+    // extend number of votes for this topic
     db.collection('topic_votes').count( {tid:tid_}, function(err, count) {
         _.extend(topic,{votes:count});
         
@@ -118,8 +124,22 @@ function extendTopicInfo(topic,uid_,finished) {
             {tid:tid_, uid:uid_},
             function(err, count) {
                 _.extend(topic,{voted:count});
-                finished(topic);
-            });
+                
+                // extend number of members for this topic
+                db.collection('topic_participants').count( {tid:tid_}, function(err, count) {
+                    _.extend(topic,{participants:count});
+                    
+                    // check if user has joined topic
+                    db.collection('topic_participants').count(
+                        {tid:tid_, uid:uid_},
+                        function(err, count) {
+                            _.extend(topic,{joined:count});
+                            
+                            // send response
+                            finished(topic);
+                        });
+                    });
+                });
     });
 }
 
@@ -146,14 +166,15 @@ app.put('/json/topic/:id', function(req, res) { auth(req, res, function(req, res
     
     // TODO crashes server
     // // only allow new topics if they do not exist yet
-    // if(db.collection('topics').count( { name: topic.name } ) > 0) {
+    // db.collection('topics').count( { name: topic.name } )) {
     //     res.json({error:'Topic already exists!'});
     //     return;
     // }
 
     var ObjectId = require('mongodb').ObjectID;
     db.collection('topics').update(
-        { _id: ObjectId(topic._id) }, { $set: {name: topic.name, desc: topic.desc } }, {}); // FIXME
+        { _id: ObjectId(topic._id) }, { $set: {name: topic.name, desc: topic.desc } }, 
+        {}, function (err, inserted) {});
     res.json(topic);
     
 });});
@@ -180,14 +201,26 @@ function createGroups(topic) {
     });
 }
 
-function manageTopicState(topic) {
-    // Date(year, month, day, hour, minute, second, millisecond);
-    var oneWeek = new Date(0,0,7,0,0,0,0);
-    var selectionSpan = oneWeek;
-    var proposalSpan = oneWeek;
-    var consensusSpan = oneWeek;
-    //var completedSpan = oneWeek;
+function getDeadline(givenStage) {
+    var oneWeek = 1000*60*60*24*7; // one week milliseconds
+    var deadline = Date.now();
     
+    switch (givenStage) {
+        case 0: // get selection stage deadline
+            deadline += oneWeek;
+            break;
+        case 1: // get proposal stage deadline
+            deadline += oneWeek;
+            break;
+        case 2: // get consensus stage deadline
+            deadline = 0; // no deadline in consensus stage
+            break;
+    }
+    
+    return deadline;
+}
+
+function manageTopicState(topic) {
     // exit this funtion if stage transition is not due yet
     if(Date.now()<topic.nextStageDeadline)
         return;
@@ -195,24 +228,25 @@ function manageTopicState(topic) {
     // move to next stage
     switch (topic.stage) {
         case 0: // we are currently in selection stage
-            topic.nextStageDeadline += proposalSpan;
             ++topic.stage;
+            topic.nextStageDeadline = getDeadline(1); // get deadline for proposal stage
             break;
         case 1: // we are currently in proposal stage
-            topic.nextStageDeadline += consensusSpan;
             ++topic.stage;
+            //topic.nextStageDeadline = ..; // TODO see below
             createGroups(topic);
             break;
         case 2: // we are currently in consensus stage
-            ++topic.stage;
+            //++topic.stage; // TODO consensus stage should be handled with separate logic
+            // e.g. when groups are finished
             break;
     }
     
     // update database
-    var ObjectId = require('mongodb').ObjectID;
     db.collection('topics').update(
-        { _id: ObjectId(topic._id) },
-        { $set: {stage: topic.stage, nextStageDeadline: topic.nextStageDeadline } }, {}); // FIXME
+        { _id: topic._id },
+        { $set: {stage: topic.stage, nextStageDeadline: topic.nextStageDeadline } },
+        {}, function (err, inserted) {});
 }
 
 app.get('/json/topic/:id', function(req, res) { auth(req, res, function(req, res) {
@@ -228,7 +262,8 @@ app.post('/json/topic', function(req, res) { auth(req, res, function(req, res) {
 
     topic.stage = 0;
     topic.level = 0;
-    topic.timeCreated = new Date();
+    topic.timeCreated = Date.now();
+    topic.nextStageDeadline = getDeadline(0);
     db.collection('topics').insert(topic, function(err, topic){
         res.json(topic[0]);
         console.log('new topic');
@@ -254,7 +289,7 @@ app.post('/json/topic-vote', function(req, res) { auth(req, res, function(req, r
         if(0 == count) {
             db.collection('topic_votes').insert(topic_vote, function(err, topic_vote) {
                 // return number of current votes
-                count_votes(res,topic_vote.tid);
+                count_votes(res,topic_vote[0].tid);
             });
             console.log('user ' + topic_vote.uid + ' voted for topic ' + topic_vote.tid );
         } else
@@ -274,6 +309,41 @@ app.post('/json/topic-unvote', function(req, res) { auth(req, res, function(req,
         function(vote,err) {
             // return number of current votes
             count_votes(res,topic_vote.tid);
+        });
+});});
+
+app.post('/json/topic-join', function(req, res) { auth(req, res, function(req, res) {
+    var topic_participant = req.body;
+    
+    // get user name and put into vote
+    topic_participant['uid'] = req.signedCookies.uid;
+    
+    // TODO use findAndModify as in proposal
+    db.collection('topic_participants').count( topic_participant, function(err, count) {
+        // do not allow user to vote twice for the same topic
+        if(0 == count) {
+            db.collection('topic_participants').insert(topic_participant, function(err, topic_participant) {
+                // return number of current votes
+                count_participants(res,topic_participant[0].tid);
+            });
+            console.log('user ' + topic_participant.uid + ' joined topic ' + topic_participant.tid );
+        } else
+            // return number of current participants
+            count_participants(res,topic_participant.tid);
+    });
+    
+});});
+
+app.post('/json/topic-unjoin', function(req, res) { auth(req, res, function(req, res) {
+    var topic_participant = req.body;
+    
+    // get user name and put into vote
+    topic_participant['uid'] = req.signedCookies.uid;
+    // remove entry
+    db.collection('topic_participants').remove(topic_participant,true,
+        function(member,err) {
+            // return number of current participants
+            count_participants(res,topic_participant.tid);
         });
 });});
 
