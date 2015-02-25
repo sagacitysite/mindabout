@@ -280,9 +280,9 @@ app.delete('/json/topic/:id', function(req, res) { auth(req, res, function(req,r
 app.post('/json/topic-vote', function(req, res) { auth(req, res, function(req, res) {
     var topic_vote = req.body;
     
-    // get user name and put into vote
+    // get user id and put into vote
     topic_vote['uid'] = req.signedCookies.uid;
-    
+
     // TODO use findAndModify as in proposal
     db.collection('topic_votes').count( topic_vote, function(err, count) {
         // do not allow user to vote twice for the same topic
@@ -302,7 +302,7 @@ app.post('/json/topic-vote', function(req, res) { auth(req, res, function(req, r
 app.post('/json/topic-unvote', function(req, res) { auth(req, res, function(req, res) {
     var topic_vote = req.body;
     
-    // get user name and put into vote
+    // get user id and put into vote
     topic_vote['uid'] = req.signedCookies.uid;
     // remove entry
     db.collection('topic_votes').remove(topic_vote,true,
@@ -315,9 +315,9 @@ app.post('/json/topic-unvote', function(req, res) { auth(req, res, function(req,
 app.post('/json/topic-join', function(req, res) { auth(req, res, function(req, res) {
     var topic_participant = req.body;
     
-    // get user name and put into vote
+    // get user id and put into vote
     topic_participant['uid'] = req.signedCookies.uid;
-    
+
     // TODO use findAndModify as in proposal
     db.collection('topic_participants').count( topic_participant, function(err, count) {
         // do not allow user to vote twice for the same topic
