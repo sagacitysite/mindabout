@@ -194,7 +194,7 @@ function createGroups(topic) {
     var groupMaxSize = (groupSize+0.5);
     
     // find topic_participants
-    db.collection('topic_participants').find( { tid:'54f646ccc3a414a60d40d660' }).toArray( function(err, topic_participants) {
+    db.collection('topic_participants').find( { tid:topic._id }).toArray( function(err, topic_participants) {
         var numTopicParticipants = topic_participants.length;
         
         console.log('numTopicParticipants: '+numTopicParticipants);
@@ -210,15 +210,6 @@ function createGroups(topic) {
         console.log('rounded groups: '+numGroups);
         
         // shuffle topic_participants
-        /*var tmp, r;
-        for(var i=topic_participants.length; i>0; i--) {
-            r = Math.floor(Math.random() * i); // random index
-            
-            // swap indices
-            tmp = topic_participants[i];
-            topic_participants[i] = topic_participants[r];
-            topic_participants[r] = tmp;
-        }*/
         _.shuffle(topic_participants);
         
         console.log('participants shuffled');
@@ -232,25 +223,11 @@ function createGroups(topic) {
         _.each(topic_participants, function(participant) {
             
             // find first smallest group
-            /*var minLength = groups[0].length;
-            var minIdx = 0;
-            for(var j=1; j<numGroups; ++j) {
-                if(groups[j].length < minLength) {
-                    minLength = groups[j].length;
-                    minIdx = j;
-                }
-            }*/
-            //groups[minIdx].push(participant.uid);
-            
             var group = _.min(groups, function(group) {return group.length;});
-            
-            //console.log('group: '+JSON.stringify(group));
-            
             group.push(participant.uid);
         });
-        
-        //console.log('groups: '+JSON.stringify(groups));
-        
+
+        // log group participant distribution
         var counts = _.countBy(groups, function(group) {return group.length;});
         console.log('groups filled: ' + JSON.stringify(counts));
         
@@ -260,11 +237,7 @@ function createGroups(topic) {
             var gid = ObjectId();
             
             // create group itself
-            db.collection('groups').insert(
-                {'gid':gid,'tid':topic.tid},
-                function(err) {
-                    console.log('save group ' + gid + ' with ' + group.length + ' users.');
-                });
+            db.collection('groups').insert({'gid':gid,'tid':topic.tid}, function(err) {});
             
             // create participants for this group
             /*_.each(group, function(uid) {
@@ -589,16 +562,23 @@ app.get('/test/fill_topic_participants', function(req, res) {
 app.get('/test/create_groups', function(req, res) {
     var ObjectId = require('mongodb').ObjectID;
 
+    /*db.collection('groups').remove({tid:'54ff453cfec7e11108ca2f65'},true,
+        function(topic_participant,err) {
+        });
+    createGroups({_id:'54ff453cfec7e11108ca2f65'});*/
+    
     db.collection('groups').remove({tid:'54ff453cfec7e11108ca2f65'},true,
         function(topic_participant,err) {
         });
-    createGroups({tid:'54f646ccc3a414a60d40d660'});
-    //createGroups({tid:'54ff453cfec7e11108ca2f65'});
+    createGroups({_id:'54ff453cfec7e11108ca2f65'});
 
     res.send('successfull');
 });
 
-// server listening
+// ###################
+// ### S E R V E R ###
+// ###################
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
