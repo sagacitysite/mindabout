@@ -38,7 +38,7 @@ define([
                     this.login(e);
                 }
             },
-            'click #login': function(e) {
+            'click #log': function(e) {
                 if(e) e.preventDefault();
                 this.login(e);
             }

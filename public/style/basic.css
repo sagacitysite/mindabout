@@ -8,7 +8,6 @@ body {
     font-family: 'Roboto', sans-serif;
     font-size: 0.9em;
     font-weight: 300;
-    background-color: #f8f8f8;
 }
 
 a {
@@ -17,7 +16,7 @@ a {
     text-decoration: none;
 }
 
-p a:hover,a:active,a:focus {
+p a:hover,p a:active,p a:focus {
     text-shadow: 0 0 5px #999;
 }
 
@@ -166,4 +165,12 @@ table tbody tr td {
 
 .right-pos {
     float: right;
+}
+
+.clearfix:after {
+    content: ".";
+    clear: both;
+    display: block;
+    visibility: hidden;
+    height: 0px;
 }

@@ -46,6 +46,10 @@ app.use(cookieParser('secret'));
 app.use(session({ secret: 'secret', key: 'uid', cookie: { secure: true }}));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ########################
+// ###   H E L P E R S  ###
+// ########################
+
 /*// TODO use http://passportjs.org/guide/basic-digest/ ?
 passport.use(new DigestStrategy({ qop: 'auth' },
   function(username, done) {
@@ -180,23 +184,96 @@ app.put('/json/topic/:id', function(req, res) { auth(req, res, function(req, res
 });});
 
 function createGroups(topic) {
-    var groupSize = 5;
-    
-    // count proposals
-    db.collection('proposals').count( { tid:topic.tid }, function(err, numProposals) {
-        // compute number of groups
-        var numGroups = numProposals/groupSize;
+    var ObjectId = require('mongodb').ObjectID;
         
+    var groupSize = 4.5; // group size is 4 or 5
+    var limitSimpleRule = 50; // number of topic_participants (if more then x topic_participants, complex rule is used)
+    
+    // calculated values
+    var groupMinSize = (groupSize-0.5);
+    var groupMaxSize = (groupSize+0.5);
+    
+    // find topic_participants
+    db.collection('topic_participants').find( { tid:'54f646ccc3a414a60d40d660' }).toArray( function(err, topic_participants) {
+        var numTopicParticipants = topic_participants.length;
+        
+        console.log('numTopicParticipants: '+numTopicParticipants);
+        
+        // compute number of groups
+        var numGroups;
+        if(numTopicParticipants>limitSimpleRule)
+            numGroups = numTopicParticipants/groupSize; // simple rule, ideally all groups are 5, group size 4 only exception
+        else
+            numGroups = numTopicParticipants/groupMaxSize; // complex rule, 4 and 5 uniformly distributed
+        numGroups = Math.ceil(numGroups); // round up to next integer
+        
+        console.log('rounded groups: '+numGroups);
+        
+        // shuffle topic_participants
+        /*var tmp, r;
+        for(var i=topic_participants.length; i>0; i--) {
+            r = Math.floor(Math.random() * i); // random index
+            
+            // swap indices
+            tmp = topic_participants[i];
+            topic_participants[i] = topic_participants[r];
+            topic_participants[r] = tmp;
+        }*/
+        _.shuffle(topic_participants);
+        
+        console.log('participants shuffled');
+        
+        // initialize empty groups
+        var groups = new Array(numGroups);
         for(var i=0; i<numGroups; ++i)
-            ;
+            groups[i] = [];
             
-        // create groups
-        db.collection('proposals').find( { tid:topic.tid }, function(err, proposal) {
-            // select group randomly
-            var gid = 0;
+        // push topic_participants into groups
+        _.each(topic_participants, function(participant) {
             
-            db.collection('proposals').count( { gid:topic.tid }, function(err, numProposals) {
-            });
+            // find first smallest group
+            /*var minLength = groups[0].length;
+            var minIdx = 0;
+            for(var j=1; j<numGroups; ++j) {
+                if(groups[j].length < minLength) {
+                    minLength = groups[j].length;
+                    minIdx = j;
+                }
+            }*/
+            //groups[minIdx].push(participant.uid);
+            
+            var group = _.min(groups, function(group) {return group.length;});
+            
+            //console.log('group: '+JSON.stringify(group));
+            
+            group.push(participant.uid);
+        });
+        
+        //console.log('groups: '+JSON.stringify(groups));
+        
+        var counts = _.countBy(groups, function(group) {return group.length;});
+        console.log('groups filled: ' + JSON.stringify(counts));
+        
+        // insert all groups into database
+        _.each(groups, function(group) {
+            // create group new id
+            var gid = ObjectId();
+            
+            // create group itself
+            db.collection('groups').insert(
+                {'gid':gid,'tid':topic.tid},
+                function(err) {
+                    console.log('save group ' + gid + ' with ' + group.length + ' users.');
+                });
+            
+            // create participants for this group
+            /*_.each(group, function(uid) {
+                db.collection('group_participants').insert(
+                    {'gid':gid,'uid':uid},
+                    function(err, group_participant){
+                        console.log('new group_participant');
+                    });
+            });*/
         });
     });
 }
@@ -328,7 +405,7 @@ app.post('/json/topic-join', function(req, res) { auth(req, res, function(req, r
             });
             console.log('user ' + topic_participant.uid + ' joined topic ' + topic_participant.tid );
         } else
-            // return number of current participants
+            // return number of current topic_participants
             count_participants(res,topic_participant.tid);
     });
     
@@ -342,7 +419,7 @@ app.post('/json/topic-unjoin', function(req, res) { auth(req, res, function(req,
     // remove entry
     db.collection('topic_participants').remove(topic_participant,true,
         function(member,err) {
-            // return number of current participants
+            // return number of current topic_participants
             count_participants(res,topic_participant.tid);
         });
 });});
@@ -484,7 +561,45 @@ app.post("/api/auth/remove_account", function(req, res){
     });
 });*/
 
+// ###################
+// ###   T E S T   ###
+// ###################
+
+app.get('/test/fill_topic_participants', function(req, res) {
+    var ObjectId = require('mongodb').ObjectID;
+    
+    for(i = 0; i < 1000; ++i) {
+        db.collection('topic_participants').insert(
+            {'tid':'54f646ccc3a414a60d40d660','uid':ObjectId()},
+            function(err, topic_participants){
+                console.log('new topic_participants');
+            });
+    }
+    for(i = 0; i < 40; ++i) {
+        db.collection('topic_participants').insert(
+            {'tid':'54ff453cfec7e11108ca2f65','uid':ObjectId()},
+            function(err, topic_participants){
+                console.log('new topic_participants');
+            });
+    }
+    
+    res.send('successfull');
+});
+
+app.get('/test/create_groups', function(req, res) {
+    var ObjectId = require('mongodb').ObjectID;
+
+    db.collection('groups').remove({tid:'54ff453cfec7e11108ca2f65'},true,
+        function(topic_participant,err) {
+        });
+    createGroups({tid:'54f646ccc3a414a60d40d660'});
+    //createGroups({tid:'54ff453cfec7e11108ca2f65'});
+
+    res.send('successfull');
+});
+
 // server listening
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
+
