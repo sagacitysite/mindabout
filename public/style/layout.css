@@ -1,3 +1,24 @@
+/* ################### */
+/* ##### CLASSES ##### */
+/* ################### */
+
+.barbtn {
+    cursor: pointer;
+    line-height: 2.5em;
+    padding-left: 28px;
+    background: #f8f8f8 url('../img/proposal.png') no-repeat 5px center;
+    border-bottom: 1px solid #e0e6ef;
+    border-top: 1px solid #e0e6ef;
+}
+
+.barbtn:hover {
+    background-color:#f0f0f0;
+}
+
+/* ################# */
+/* ##### ID'S ###### */
+/* ################# */
+
 #loading {
     position: fixed;
     top: 0;
@@ -8,6 +29,7 @@
 }
 
 #wrapper {
+    min-height: 100%;
     position: relative;
 }
 
@@ -21,7 +43,9 @@
     
 }
 
+/* ####################### */
 /* ##### H E A D E R ##### */
+/* ####################### */
 
 #header {
     position: fixed;
@@ -41,7 +65,8 @@
 }
 
 #logo {
-    background: transparent url("../img/logo.png") 0 center no-repeat;
+    display: block;
+    background: transparent url("../img/textlogo.png") 0 center no-repeat;
     background-size: auto 30px;
     height: 40px;
 }
@@ -53,18 +78,17 @@
     font-size: 0.8em;
 }
 
+/* ######################### */
 /* ##### T O O L B A R ##### */
+/* ######################### */
 
 #toolbar {
-    height: 30px;
-    background-color: #f8f8f8;
-    border-left: 1px solid #ccc;
-    border-right: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
+    float: right;
 }
 
-#user-notification {
-    display: none;
+#toolbar ul {
+    display: inline-block;
+    padding-top: 15px;
 }
 
 #toolbar li {
@@ -74,14 +98,14 @@
 }
 
 #toolbar #separation {
-    height: 32px;
+    height: 16px;
     border-left: 1px solid #999;
 }
 
 #toolbar a {
     display: block;
-    width: 32px;
-    height: 32px;
+    width: 16px;
+    height: 16px;
     cursor: pointer;
     background-repeat: no-repeat;
     background-position: left top;
@@ -100,12 +124,14 @@
     height: 12px;
 }
 
-#toolbar #noti-topics { background-image: url('../img/ico_topics.png'); }
-#toolbar #noti-msg { background-image: url('../img/ico_msg.png'); }
-#toolbar #noti-reput { background-image: url('../img/ico_reput.png'); }
-#toolbar #settings { background-image: url('../img/ico_settings.png'); }
+#toolbar #noti-topics { background-image: url('../img/proposal.png'); }
+#toolbar #noti-msg { background-image: url('../img/msg.png'); }
+#toolbar #noti-reput { background-image: url('../img/karma.png'); }
+#toolbar #settings { background-image: url('../img/settings.png'); }
 
+/* ####################### */
 /* ##### B L O C K S ##### */
+/* ####################### */
 
 .left-blocks {
     float: left;
@@ -129,14 +155,16 @@
 }
 
 .block {
-    margin-bottom: 1.5em;
+    margin-bottom: 1.2em;
 }
 
 .block-content {
     padding: 5px;
 }
 
+/* ############################### */
 /* ##### N A V I G A T I O N ##### */
+/* ############################### */
 
 #navigation li {
     list-style: none;
@@ -157,7 +185,9 @@
     color: #555;
 }
 
+/* ######################### */
 /* ##### C O N T E N T ##### */
+/* ######################### */
 
 .view {
     float: left;
@@ -170,7 +200,40 @@
     padding: 20px 0 20px 30px;
 }
 
+/* ######################### */
+/* ###### F O O T E R ###### */
+/* ######################### */
+
+#footer {
+    font-size: 0.8em;
+    position: absolute;
+    bottom: 0px;
+    background-color: #EEEEEE;
+    border-top: 1px solid #CCCCCC;
+    height: 30px;
+    width: 100%;
+    padding: 5px 0px;
+    text-align: center;
+}
+
+#footmenu {
+    display: inline-block;
+}
+
+#footmenu li {
+    list-style: none;
+    float: left;
+}
+
+#footmenu a {
+    display: inline-block;
+    padding: 0 0.3em;
+    line-height: 1.5em;
+}
+
+/* ########################### */
 /* ##### L I G H T B O X ##### */
+/* ########################### */
 
 .lightbox {
     display: none;

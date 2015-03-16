@@ -66,19 +66,22 @@
 <!-- Right Area -->
 <div class="blocks right-blocks">
     
-    <div class="block" id="block-stats">
+    <div class="block" id="block-prop">
         <h2>Proposal</h2>
         <div class="block-content">
-            Your proposal und edit
+            {{#if proposal}}
+                <div class="barbtn" id="createprop">Create porposal</div>
+            {{else}}
+                <div class="barbtn" id="yourprop">Your proposal</div>
+            {{/if}}
         </div>
     </div>
     
     <div class="block" id="block-stats">
         <h2>Statistics</h2>
         <div class="block-content">
-            <ul>
-                <li>Votes: {{votes}}</li>
-                <li>Participants: {{participants}}</li>
+            <span>Votes: {{votes}}</span><br>
+            <span>Participants: {{participants}}</span>
             </ul>
         </div>
     </div>
