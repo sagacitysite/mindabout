@@ -3,7 +3,7 @@ var mongoskin = require('mongoskin');
 var db = mongoskin.db('mongodb://'+process.env.IP+'/mindabout');
 var ObjectId = require('mongodb').ObjectID;
 
-var topics = require("topics");
+var topics = require('./topics');
 
 exports.fill_topic_participants = function(req, res) {
     for(i = 0; i < 1000; ++i) {

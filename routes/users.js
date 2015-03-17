@@ -17,7 +17,7 @@ function clean_user_data(user) {
 }
 
 // authentication wrapper, e.g. app.get('/json/topics', auth(req,res,function(req, res) ...
-function auth_wrapper(req, res, next) {
+exports.auth_wrapper = function(req, res, next) {
     //console.log(req.signedCookies.uid);
     
     db.collection('users').findOne({ uid: req.signedCookies.uid, auth_token: req.signedCookies.auth_token }, function(err, user){
