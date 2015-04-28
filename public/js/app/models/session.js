@@ -81,17 +81,17 @@ define([
                 },
                 data:  JSON.stringify( _.omit(opts, 'method') ),
                 success: function(res){
-
+                    
                     if( !res.error ){
                         if(_.indexOf(['login', 'signup'], opts.method) !== -1){
-
+                            
                             self.updateSessionUser( res.user || {} );
                             self.set({ uid: res.user.uid, logged_in: true });
                         } else {
-
+                            
                             self.set({ logged_in: false });
                         }
-
+                            
                         if( callback && 'success' in callback ) callback.success(res);
                     } else {
                         if( callback && 'error' in callback ) callback.error(res);

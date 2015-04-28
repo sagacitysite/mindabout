@@ -95,7 +95,7 @@ define([
             var date = new Date(rawDate);
             var y = date.getFullYear();
             var m = date.getMonth();
-            var  d = date.getDate();
+            var d = date.getDate();
             var newDate = d+"-"+m+"-"+y;
             return newDate;
         },

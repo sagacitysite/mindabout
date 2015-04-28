@@ -14,18 +14,19 @@ define([
         login: function (e) {
             if(this.$("#login-form")) { //.parsley('validate')){
                 app.session.login({
-                    uid: this.$("#uid").val(),
-                    upw: this.$("#upw").val()
+                    name: this.$("#name").val(),
+                    pass: this.$("#pass").val()
                 }, {
                     success: function(mod, res){
                         //if(DEBUG) console.log(mod, res);
+                        
+                        // Redirect
+                        window.location.href = "#/topics";
                     },
                     error: function(mod, res){
                         //if(DEBUG) console.log("ERROR", mod, res);
                     }
                 });
-                // Redirect
-                window.location.href = "#/topics";
             } else {
                 // Invalid clientside validations thru parsley
                 //if(DEBUG) console.log("Did not pass clientside validation");
@@ -33,7 +34,7 @@ define([
         },
     
         events: {
-            'keypress #upw': function(e) {
+            'keypress #pass': function(e) {
                 if (e.which == 13) {
                     this.login(e);
                 }

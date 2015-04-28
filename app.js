@@ -46,6 +46,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ###################
 // ### T O P I C S ###
 // ###################
+
 app.get('/json/topics', function(req, res) { auth(req, res, topics.list); });
 app.put('/json/topic/:id', function(req, res) { auth(req, res, topics.update); });
 app.get('/json/topic/:id', function(req, res) { auth(req, res, topics.query); });
@@ -59,11 +60,13 @@ app.post('/json/topic-unjoin', function(req, res) { auth(req, res, topics.unjoin
 // #########################
 // ### P R O P O S A L S ###
 // #########################
+
 app.get('/json/proposal/:id', function(req, res) { auth(req, res, proposals.query); });
 
 // ###################
 // ### G R O U P S ###
 // ###################
+
 app.get('/json/groups', function(req, res) { auth(req, res, groups.list); });
 // get group by id
 app.get('/json/group/:id', function(req, res) { auth(req, res, proposals.query); });
@@ -71,6 +74,7 @@ app.get('/json/group/:id', function(req, res) { auth(req, res, proposals.query);
 // ###################
 // ###   A U T H   ###
 // ###################
+
 // authentification
 // TODO required?
 app.get("/json/auth", users.auth );
@@ -89,12 +93,14 @@ app.post("/api/auth/remove_account", users.delete );*/
 // ###################
 // ###   T E S T   ###
 // ###################
+
 app.get('/test/fill_topic_participants', tests.fill_topic_participants );
 app.get('/test/create_groups', tests.create_groups );
 
 // ###################
 // ### S E R V E R ###
 // ###################
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });

@@ -21,6 +21,11 @@
 #content .vote span { background-image: url('../img/vote.png'); }
 #content .merge span { background-image: url('../img/merge.png'); }
 
+#toolbar .noti-topics span { background-image: url('../img/proposal.png'); }
+#toolbar .noti-msg span { background-image: url('../img/msg.png'); }
+#toolbar .noti-reput span { background-image: url('../img/karma.png'); }
+#toolbar .settings span { background-image: url('../img/settings.png'); }
+
 #content .join.joined,
 #content .vote.voted {
     background: #dfb none; /*#fdb*/

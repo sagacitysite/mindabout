@@ -88,21 +88,21 @@
 
 #toolbar ul {
     display: inline-block;
-    padding-top: 15px;
+    padding-top: 10px;
 }
 
 #toolbar li {
     list-style: none;
-    margin: 0 0.5em;
     float: left;
 }
 
 #toolbar #separation {
-    height: 16px;
+    height: 22px;
+    margin: 1px 5px;
     border-left: 1px solid #999;
 }
 
-#toolbar a {
+/*#toolbar a {
     display: block;
     width: 16px;
     height: 16px;
@@ -110,24 +110,28 @@
     background-repeat: no-repeat;
     background-position: left top;
     background-color: transparent;
+}*/
+
+#toolbar button {
+    position: relative;
 }
 
-#toolbar a .count {
+#toolbar mark {
+    position: absolute;
+    top: -4px;
+    left: -4px;
     display: block;
-    color: #fff;
-    text-shadow: 0 0 2px rgba(0,0,0,0.8);
+    color: #555;
+    text-shadow: 0 0 2px rgba(0,0,0,0.3);
+    box-shadow: 0 0 2px rgba(0,0,0,0.3);
     font-size: 10px;
-    line-height: 12px;
+    line-height: 14px;
     text-align: center;
-    background-color: red;
-    width: 12px;
-    height: 12px;
+    background-color: #ff5369;
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
 }
-
-#toolbar #noti-topics { background-image: url('../img/proposal.png'); }
-#toolbar #noti-msg { background-image: url('../img/msg.png'); }
-#toolbar #noti-reput { background-image: url('../img/karma.png'); }
-#toolbar #settings { background-image: url('../img/settings.png'); }
 
 /* ####################### */
 /* ##### B L O C K S ##### */

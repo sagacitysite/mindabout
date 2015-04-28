@@ -15,20 +15,23 @@ define([
         template: Template,
         collection: users,
         
-        calc: function (e) {
-            document.getElementById("uid").value=(Math.floor(Math.random()*4294967295)).toString(16).toUpperCase();
+        generateUsername: function (e) {
+            document.getElementById("name").value=(Math.floor(Math.random()*4294967295)).toString(16).toUpperCase();
         },
         
         events: {
-            'click #register': function(e) {
+            'click #signup': function(e) {
                 if(this.$("#signup-form")/*.parsley('validate')*/){
                     app.session.signup({
-                        uid: this.$("#uid").val(),
-                        upw: this.$("#upw").val(),
+                        name: this.$("#name").val(),
+                        pass: this.$("#pass").val(),
                         email: this.$("#email").val()
                     }, {
                     success: function(mod, res){
                         console.log(mod);
+                        
+                        // Redirect
+                        window.location.href = "#/topics";
                     },
                     error: function(mod, res){
                         console.log(mod);
@@ -40,12 +43,12 @@ define([
             },
             'click #again': function(e) {
                 if(e) e.preventDefault();
-                this.calc(e);
+                this.generateUsername(e);
             }
         },
         
         onShow: function(e) {
-           this.calc(e);
+           this.generateUsername(e);
         }
     });
     
