@@ -8,14 +8,14 @@ var topics = require('./topics');
 exports.fill_topic_participants = function(req, res) {
     for(i = 0; i < 1000; ++i) {
         db.collection('topic_participants').insert(
-            {'tid':'54f646ccc3a414a60d40d660','uid':ObjectId()},
+            {'tid':ObjectId('54f646ccc3a414a60d40d660'),'uid':ObjectId()},
             function(err, topic_participants){
                 console.log('new topic_participants');
             });
     }
     for(i = 0; i < 40; ++i) {
         db.collection('topic_participants').insert(
-            {'tid':'54ff453cfec7e11108ca2f65','uid':ObjectId()},
+            {'tid':ObjectId('54ff453cfec7e11108ca2f65'),'uid':ObjectId()},
             function(err, topic_participants){
                 console.log('new topic_participants');
             });
@@ -30,10 +30,11 @@ exports.create_groups = function(req, res) {
         });
     createGroups({_id:'54ff453cfec7e11108ca2f65'});*/
     
-    db.collection('groups').remove({tid:'54ff453cfec7e11108ca2f65'},true,
+    db.collection('groups').remove({'tid':ObjectId('54ff453cfec7e11108ca2f65')},true,
         function(topic_participant,err) {
         });
-    topics.createGroups({_id:'54ff453cfec7e11108ca2f65'});
+    var topic = {'_id':ObjectId('54ff453cfec7e11108ca2f65')};
+    topics.createGroups(topic);
 
     res.send('successfull');
 };

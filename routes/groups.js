@@ -11,7 +11,8 @@ exports.list = function(req, res) {
 
 // get group by id
 exports.query = function(req, res) {
-    db.collection('groups').findOne({ _id:ObjectId(req.params.id) }, function(err, group) {
+    db.collection('groups').findOne({ '_id':ObjectId(req.params.id) },
+    function(err, group) {
         res.json(group);
     });
 };

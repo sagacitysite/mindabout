@@ -3,19 +3,22 @@ var mongoskin = require('mongoskin');
 var db = mongoskin.db('mongodb://'+process.env.IP+'/mindabout');
 var ObjectId = require('mongodb').ObjectID;
 
-function count_votes(response,tid_) {
-    db.collection('topic_votes').count( {tid:tid_}, function(err, count) {
+function count_votes(response,tid) {
+    db.collection('topic_votes').count( {'tid': tid}, function(err, count) {
         response.send(count.toString());
     });
 }
 
-function count_participants(response,tid_) {
-    db.collection('topic_participants').count( {tid:tid_}, function(err, count) {
+function count_participants(response,tid) {
+    db.collection('topic_participants').count( {'tid': tid}, function(err, count) {
         response.send(count.toString());
     });
 }
 
-function extendTopicInfo(topic,uid_,finished) {
+function extendTopicInfo(topic,uid,finished) {
+    
+    // extend timeCreated
+    topic.timeCreated = topic._id.getTimestamp();
     
     // extend stage name
     switch (topic.stage) {
@@ -30,27 +33,27 @@ function extendTopicInfo(topic,uid_,finished) {
             break;
     }
     
-    var tid_ = topic._id.toString();
     // extend number of votes for this topic
-    db.collection('topic_votes').count( {tid:tid_}, function(err, count) {
-        _.extend(topic,{votes:count});
+    var tid = topic._id;
+    db.collection('topic_votes').count( {'tid': tid}, function(err, count) {
+        topic.votes = count;
         
         // check if user has voted for topic
         db.collection('topic_votes').count(
-            {tid:tid_, uid:uid_},
+            {'tid': tid, 'uid': uid},
             function(err, count) {
-                _.extend(topic,{voted:count});
+                topic.voted = count;
                 
                 // extend number of members for this topic
-                db.collection('topic_participants').count( {tid:tid_}, function(err, count) {
-                    _.extend(topic,{participants:count});
+                db.collection('topic_participants').count( {'tid': tid}, function(err, count) {
+                    topic.participants = count;
                     
                     // check if user has joined topic
                     db.collection('topic_participants').count(
-                        {tid:tid_, uid:uid_},
+                        {'tid': tid, 'uid': uid},
                         function(err, count) {
-                            _.extend(topic,{joined:count});
-                            
+                            topic.joined = count;
+                            console.log(JSON.stringify(topic));
                             // send response
                             finished(topic);
                         });
@@ -71,7 +74,7 @@ exports.list = function(req, res) {
 
         // loop over all topics        
         _.each(topics,function(topic) {
-            extendTopicInfo(topic,req.signedCookies.uid,finished);
+            extendTopicInfo(topic,ObjectId(req.signedCookies.uid),finished);
         });
     });
 };
@@ -87,12 +90,12 @@ exports.update = function(req, res) {
     // }
 
     db.collection('topics').update(
-        { _id: ObjectId(topic._id) }, { $set: {name: topic.name, desc: topic.desc } }, 
-        {}, function (err, inserted) {});
-    res.json(topic);
+        { '_id': ObjectId(topic._id) }, { $set: {name: topic.name, desc: topic.desc } }, 
+        {}, function (err, topic) {res.json(topic);});
 };
 
 function createGroups(topic) {
+    // constants
     var groupSize = 4.5; // group size is 4 or 5
     var limitSimpleRule = 50; // number of topic_participants (if more then x topic_participants, complex rule is used)
     
@@ -101,7 +104,8 @@ function createGroups(topic) {
     var groupMaxSize = (groupSize+0.5);
     
     // find topic_participants
-    db.collection('topic_participants').find( { tid:topic._id }).toArray( function(err, topic_participants) {
+    db.collection('topic_participants').find({ 'tid': topic._id }).toArray(
+    function(err, topic_participants) {
         var numTopicParticipants = topic_participants.length;
         
         console.log('numTopicParticipants: '+numTopicParticipants);
@@ -118,22 +122,20 @@ function createGroups(topic) {
         
         // shuffle topic_participants
         _.shuffle(topic_participants);
-        
         console.log('participants shuffled');
         
         // initialize empty groups
         var groups = new Array(numGroups);
         for(var i=0; i<numGroups; ++i)
             groups[i] = [];
-            
+        
         // push topic_participants into groups
         _.each(topic_participants, function(participant) {
-            
             // find first smallest group
             var group = _.min(groups, function(group) {return group.length;});
             group.push(participant.uid);
         });
-
+        
         // log group participant distribution
         var counts = _.countBy(groups, function(group) {return group.length;});
         console.log('groups filled: ' + JSON.stringify(counts));
@@ -144,7 +146,8 @@ function createGroups(topic) {
             var gid = ObjectId();
             
             // create group itself
-            db.collection('groups').insert({'gid':gid,'tid':topic.tid}, function(err) {});
+            db.collection('groups').insert({'gid': gid,'tid': topic.tid},
+                                           function(err) {});
             
             // create participants for this group
             /*_.each(group, function(uid) {
@@ -160,15 +163,17 @@ function createGroups(topic) {
 exports.createGroups = createGroups;
 
 function getDeadline(givenStage) {
-    var oneWeek = 1000*60*60*24*7; // one week milliseconds
-    var deadline = Date.now();
     
+    var ONE_WEEK = 1000*60*60*24*7; // one week milliseconds
+    
+    // calculate
+    var deadline = Date.now();
     switch (givenStage) {
         case 0: // get selection stage deadline
-            deadline += oneWeek;
+            deadline += ONE_WEEK;
             break;
         case 1: // get proposal stage deadline
-            deadline += oneWeek;
+            deadline += ONE_WEEK;
             break;
         case 2: // get consensus stage deadline
             deadline = 0; // no deadline in consensus stage
@@ -202,14 +207,14 @@ function manageTopicState(topic) {
     
     // update database
     db.collection('topics').update(
-        { _id: topic._id },
+        { '_id': topic._id },
         { $set: {stage: topic.stage, nextStageDeadline: topic.nextStageDeadline } },
         {}, function (err, inserted) {});
 }
 
 exports.query = function(req, res) {
-    db.collection('topics').findOne({ _id:ObjectId(req.params.id) }, function(err, topic) {
-        extendTopicInfo(topic,req.signedCookies.uid,function(topic) {res.json(topic);});
+    db.collection('topics').findOne({ '_id': ObjectId(req.params.id) }, function(err, topic) {
+        extendTopicInfo(topic,ObjectId(req.signedCookies.uid),function(topic) {res.json(topic);});
         manageTopicState(topic);
     });
 };
@@ -219,7 +224,6 @@ exports.create = function(req, res) {
 
     topic.stage = 0;
     topic.level = 0;
-    topic.timeCreated = Date.now();
     topic.nextStageDeadline = getDeadline(0);
     db.collection('topics').insert(topic, function(err, topic){
         res.json(topic[0]);
@@ -228,7 +232,7 @@ exports.create = function(req, res) {
 };
 
 exports.delete = function(req,res) {
-    db.collection('topics').removeById(req.params.id, function() {
+    db.collection('topics').removeById(ObjectId(req.params.id), function() {
         res.json({deleted: true});
     });
 };
@@ -236,11 +240,11 @@ exports.delete = function(req,res) {
 exports.vote = function(req, res) {
     var topic_vote = req.body;
     
+    topic_vote.tid = ObjectId(topic_vote.tid);
     // get user id and put into vote
-    topic_vote['uid'] = req.signedCookies.uid;
-
+    topic_vote.uid = ObjectId(req.signedCookies.uid);
     // TODO use findAndModify as in proposal
-    db.collection('topic_votes').count( topic_vote, function(err, count) {
+    db.collection('topic_votes').count(topic_vote, function(err, count) {
         // do not allow user to vote twice for the same topic
         if(0 == count) {
             db.collection('topic_votes').insert(topic_vote, function(err, topic_vote) {
@@ -258,8 +262,9 @@ exports.vote = function(req, res) {
 exports.unvote = function(req, res) {
     var topic_vote = req.body;
     
+    topic_vote.tid = ObjectId(topic_vote.tid);
     // get user id and put into vote
-    topic_vote['uid'] = req.signedCookies.uid;
+    topic_vote.uid = ObjectId(req.signedCookies.uid);
     // remove entry
     db.collection('topic_votes').remove(topic_vote,true,
         function(vote,err) {
@@ -271,9 +276,9 @@ exports.unvote = function(req, res) {
 exports.join = function(req, res) {
     var topic_participant = req.body;
     
+    topic_participant.tid = ObjectId(topic_participant.tid);
     // get user id and put into vote
-    topic_participant['uid'] = req.signedCookies.uid;
-
+    topic_participant.uid = ObjectId(req.signedCookies.uid);
     // TODO use findAndModify as in proposal
     db.collection('topic_participants').count( topic_participant, function(err, count) {
         // do not allow user to vote twice for the same topic
@@ -292,8 +297,9 @@ exports.join = function(req, res) {
 exports.unjoin = function(req, res) {
     var topic_participant = req.body;
     
+    topic_participant.tid = ObjectId(topic_participant.tid);
     // get user name and put into vote
-    topic_participant['uid'] = req.signedCookies.uid;
+    topic_participant.uid = ObjectId(req.signedCookies.uid);
     // remove entry
     db.collection('topic_participants').remove(topic_participant,true,
         function(member,err) {
