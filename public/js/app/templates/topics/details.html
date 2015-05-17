@@ -11,15 +11,16 @@
     <h1>{{name}}</h1>
     
     <div class="sub-info">
-        <span>{{stageName}}{{#ifis stage 2}} in level{{level}}{{/ifis}}, next {{#ifis stage 2}}level{{else}}stage{{/ifis}} in xx.xx:xx:xx</span>
+        <span>{{stageName}}{{#ifis stage 2}} in level{{level}}{{/ifis}}, next {{#ifis stage 2}}level{{else}}stage{{/ifis}} in <span id="timeremaining">{{timeRemaining}}</span></span></span>
     </div>
     
     <hr/>
         
     <h2>Description</h2>
-    <div class="desc">{{desc}}</div>
+    <!--<div class="desc">{{desc}}</div>-->
     <div class="open-desc"><span>more</span></div>
     
+	<div id="descriptionPad"></div>
     <!--<hr/>
     
      #ifis status 3 

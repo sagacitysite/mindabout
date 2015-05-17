@@ -44,6 +44,9 @@ define([
                     });
                     topic.save({},
                         {success: function(model,response,options) {
+                            //alert('test123');
+                            //if(!res.created)
+                            //    alert(JSON.stringify(response));
                             topic.set(response);
                             topics.add(topic);
                         }.bind(this)

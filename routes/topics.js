@@ -82,16 +82,15 @@ exports.list = function(req, res) {
 exports.update = function(req, res) {
     var topic = req.body;
     
-    // TODO crashes server
-    // // only allow new topics if they do not exist yet
-    // db.collection('topics').count( { name: topic.name } )) {
-    //     res.json({error:'Topic already exists!'});
-    //     return;
-    // }
-
-    db.collection('topics').update(
-        { '_id': ObjectId(topic._id) }, { $set: {name: topic.name, desc: topic.desc } }, 
-        {}, function (err, topic) {res.json(topic);});
+    db.collection('topics').findOne({ '_id': ObjectId(req.params.id) }, function(err, topic) {
+        // only the owner can delete the topic
+        if(topic.owner != req.signedCookies.uid)
+            return;
+            
+        db.collection('topics').update(
+            { '_id': ObjectId(topic._id) }, { $set: {name: topic.name, desc: topic.desc } }, 
+            {}, function (err, topic) {res.json(topic);});
+    });
 };
 
 function createGroups(topic) {
@@ -222,18 +221,37 @@ exports.query = function(req, res) {
 exports.create = function(req, res) {
     var topic = req.body;
 
-    topic.stage = 0;
-    topic.level = 0;
-    topic.nextStageDeadline = getDeadline(0);
-    db.collection('topics').insert(topic, function(err, topic){
-        res.json(topic[0]);
-        console.log('new topic');
+    // only allow new topics if they do not exist yet
+    db.collection('topics').count( { name: topic.name }, function(err, count) {
+    
+        // topic already exists
+        if(count > 0) {
+            console.log("Couldn't create new Topic! - Topic already exists")
+            return;
+        }
+    
+        topic.owner = req.signedCookies.uid;
+        topic.stage = 0;
+        topic.level = 0;
+        topic.nextStageDeadline = getDeadline(0);
+        db.collection('topics').insert(topic, function(err, topic){
+            res.json(topic[0]);
+            console.log('new topic');
+        });
     });
 };
 
 exports.delete = function(req,res) {
-    db.collection('topics').removeById(ObjectId(req.params.id), function() {
-        res.json({deleted: true});
+    db.collection('topics').findOne({ '_id': ObjectId(req.params.id) }, function(err, topic) {
+        // only the owner can delete the topic
+        if(topic.owner != req.signedCookies.uid) {
+            res.json({deleted: false});
+            return;
+        }
+        
+        db.collection('topics').removeById(ObjectId(req.params.id), function() {
+            res.json({deleted: true});
+        });
     });
 };
 

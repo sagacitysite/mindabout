@@ -1,8 +1,14 @@
 define([
+    'jquery',
     'Marionette',
-    'hbs!templates/topics/details'
+    'etherpad',
+    'hbs!templates/topics/details',
+    'jquerycookie',
+    'jquerycountdown'
 ], function(
+    $,
     Marionette,
+    etherpad,
     Template
     ) {
         
@@ -18,8 +24,13 @@ define([
                 $('.open-desc').slideUp(250);
             },
             'click .del': function(e) {
+                alert($.cookie('uid'));
+                
                 if (confirm('Do you really want to delete the topic "'+this.model.get('name')+'"?')) {
-                    this.model.destroy();
+                    this.model.destroy({success: function(model, res) {
+                        if(!res.deleted)
+                            alert('Only the owner can delete the topic!');
+                    }});
                     window.location.href='/#/topics';
                 }
             },
@@ -89,6 +100,25 @@ define([
                 $('.desc').height(200);
                 $(".open-desc").css("display", "block");
             }
+            
+            $.get('https://beta.etherpad.org/p/dhfghfg/export/html',
+               {},
+               function(data,status) {
+                var str = data.replace(/\r?\n/g, "");
+                var body = str.replace(/^.*?<body[^>]*>(.*?)<\/body>.*?$/i,"$1");
+                $('#descriptionPad').html(body);
+             });
+             
+             $('#timeremaining').countdown('2015/05/20', function(event) {
+               $(this).html(event.strftime('%D:%H:%M:%S'));
+             });
+
+            /*$('#descriptionPad').pad(
+                {'height' : 400,
+                 'noColors' : true,
+                 'borderStyle' : 'none',
+                 'padId':this.model.get('_id')
+            });*/
         }
     });
     

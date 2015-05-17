@@ -5,6 +5,7 @@
       hbs: '../vendor/hbs',
       jquery: '../vendor/jquery.min',
       jquerycookie: '../vendor/jquery.cookie.min',
+      jquerycountdown: '../vendor/jquery.countdown.min',
       underscore: '../vendor/underscore-min',
       backbone: '../vendor/backbone-min',
       //Backbone: '../vendor/backbone-min',
@@ -12,6 +13,7 @@
       Marionette: '../vendor/backbone.marionette.min',
       handlebars: '../vendor/handlebars',
       ember: '../vendor/ember.min',
+      etherpad: '../vendor/etherpad',
       Session: 'models/session',
       User: 'models/user'
     },
