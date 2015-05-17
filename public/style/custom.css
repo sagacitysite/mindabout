@@ -26,8 +26,7 @@
 #toolbar .noti-reput span { background-image: url('../img/karma.png'); }
 #toolbar .settings span { background-image: url('../img/settings.png'); }
 
-#content .join.joined,
-#content .vote.voted {
+#content .ico.active {
     background: #dfb none; /*#fdb*/
     box-shadow: inset 0 0 8px 2px rgba(0,0,0,0.2);
 }
@@ -63,10 +62,8 @@
     background-color: #60a5ff;
 }
 
-#topic-list .time-remaining {
-    padding-right: 5px;
-    font-size: 12px;
-}
+#topic-list .time-remaining { padding-right: 5px; font-size: 12px; }
+#topic-list .time-remaining div { text-align: right; }
 
 #topic-list .stats {
     font-size: 11px;

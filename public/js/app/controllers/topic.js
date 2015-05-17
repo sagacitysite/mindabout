@@ -10,8 +10,11 @@ define([
     var Controller = Marionette.Controller.extend({
         route_topic_index: function(id) {
             var topic = new Model({_id:id});
-            var view = new TopicView({model:topic});
-            App.layout.content.show(view);
+            var fetching = topic.fetch();
+            fetching.done(function () {
+                var view = new TopicView({model:topic});
+                App.layout.content.show(view);
+            });
         }
     });
     

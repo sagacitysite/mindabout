@@ -1,5 +1,5 @@
 {
-    "name": "Mindabout",
+    "name": "OpenEvocracy",
     "version": "1.0.0",
     "dependencies": {
         "fresh": "*",
@@ -24,6 +24,7 @@
         "bcrypt": "*",
         "requirejs": "*",
         "underscore": "*",
+        "request": "*",
         "ejs": "*",
         "backbone": "*",
         "backbone.marionette": "*",

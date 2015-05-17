@@ -109,6 +109,17 @@ define([
                 }
             });
             this.model.set('formattedDate', this.formatDate(this.model.get('timeCreated')));
+        },
+        
+        onShow: function() {
+            //var date = Date.now() + (7*24*3600*1000);
+            if(this.model.get('stage') != 0) {
+                var date = this.model.get('nextStageDeadline');
+                var selector = '#timeremaining-'+this.model.get('_id');
+                $("#timeremaining-"+this.model.get('_id')).countdown(date, function(event) {
+                    $(this).html(event.strftime('%D:%H:%M:%S'));
+                });
+            }
         }
     });
     

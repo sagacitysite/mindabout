@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var request = require('request');
 var mongoskin = require('mongoskin');
 var db = mongoskin.db('mongodb://'+process.env.IP+'/mindabout');
 var ObjectId = require('mongodb').ObjectID;
@@ -16,9 +17,10 @@ function count_participants(response,tid) {
 }
 
 function extendTopicInfo(topic,uid,finished) {
-    
+    var tid = topic._id;
+
     // extend timeCreated
-    topic.timeCreated = topic._id.getTimestamp();
+    topic.timeCreated = tid.getTimestamp();
     
     // extend stage name
     switch (topic.stage) {
@@ -33,33 +35,64 @@ function extendTopicInfo(topic,uid,finished) {
             break;
     }
     
-    // extend number of votes for this topic
-    var tid = topic._id;
-    db.collection('topic_votes').count( {'tid': tid}, function(err, count) {
-        topic.votes = count;
-        
-        // check if user has voted for topic
-        db.collection('topic_votes').count(
-            {'tid': tid, 'uid': uid},
-            function(err, count) {
-                topic.voted = count;
-                
-                // extend number of members for this topic
-                db.collection('topic_participants').count( {'tid': tid}, function(err, count) {
-                    topic.participants = count;
-                    
-                    // check if user has joined topic
-                    db.collection('topic_participants').count(
-                        {'tid': tid, 'uid': uid},
-                        function(err, count) {
-                            topic.joined = count;
-                            console.log(JSON.stringify(topic));
-                            // send response
-                            finished(topic);
-                        });
-                    });
-                });
+    // send response only if all queries have completed
+    var finishedTopic = _.after(6, function(topic) {
+        // send response
+        finished(topic);
     });
+    
+    // get html export    
+    var padurl = 'https://beta.etherpad.org/p/'+topic.pid+'/export/html';
+    request.get(padurl,
+        function(error, response, data) {
+            var str = data.replace(/\r?\n/g, "");
+            var body = str.replace(/^.*?<body[^>]*>(.*?)<\/body>.*?$/i,"$1");
+            topic.desc = body;
+            finishedTopic(topic);
+        });
+    
+    // check if current user is owner
+    db.collection('topics').findOne(
+        { '_id': tid },
+        function(err) {
+            // delete pad id if user is not owner, pid is removed from response
+            if(topic.owner != uid)
+                delete topic.pid;
+            
+            finishedTopic(topic);
+        });
+    
+    // extend number of votes for this topic
+    db.collection('topic_votes').count(
+        {'tid': tid},
+        function(err, count) {
+            topic.votes = count;
+            finishedTopic(topic);
+        });
+    
+    // check if user has voted for topic
+    db.collection('topic_votes').count(
+        {'tid': tid, 'uid': uid},
+        function(err, count) {
+            topic.voted = count;
+            finishedTopic(topic);
+        });
+    
+    // extend number of members for this topic
+    db.collection('topic_participants').count(
+        {'tid': tid},
+        function(err, count) {
+            topic.participants = count;
+            finishedTopic(topic);
+        });
+    
+    // check if user has joined topic
+    db.collection('topic_participants').count(
+        {'tid': tid, 'uid': uid},
+        function(err, count) {
+            topic.joined = count;
+            finishedTopic(topic);
+        });
 }
 
 exports.list = function(req, res) {
@@ -223,14 +256,23 @@ exports.create = function(req, res) {
 
     // only allow new topics if they do not exist yet
     db.collection('topics').count( { name: topic.name }, function(err, count) {
-    
+        console.log(JSON.stringify(topic));
+        console.log(count);
+        
         // topic already exists
-        if(count > 0) {
+        if(count > 0 ) {
             console.log("Couldn't create new Topic! - Topic already exists")
+            res.json({});
             return;
         }
-    
+        if(topic.name=="") {
+            console.log("Couldn't create new Topic! - Topic Name is empty")
+            res.json({});
+            return;
+        }
+        
         topic.owner = req.signedCookies.uid;
+        topic.pid = ObjectId(); // create random pad id
         topic.stage = 0;
         topic.level = 0;
         topic.nextStageDeadline = getDeadline(0);

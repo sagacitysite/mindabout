@@ -11,9 +11,9 @@ define([
     etherpad,
     Template
     ) {
-        
+    
     var ht = 0;
-        
+    
     var View = Marionette.ItemView.extend({
         template: Template,
 
@@ -23,9 +23,31 @@ define([
                 $('.desc').animate({height: ht + 'px'}, 500 );
                 $('.open-desc').slideUp(250);
             },
+            'click .edit': function(e) {
+                if($('.edit').hasClass('active')) {
+                    $('.edit').removeClass('active');
+                    $('#editor').find('iframe').remove();
+                    var fetching = this.model.fetch();
+                    var that = this;
+                    fetching.done(function () {
+                        $('.desc').html(that.model.get('desc'));
+                        $('.desc').show();
+                        //$('.open-desc').show();
+                    });
+                } else {
+                    $('.edit').addClass('active');
+                    $('.desc').hide();
+                    //$('.open-desc').hide();
+                    $('#editor').pad({
+                        'padId': this.model.get('pid'),
+                        'height' : 400,
+                        'noColors' : true,
+                        'borderStyle' : 'none',
+                        'showControls' : true
+                    });
+                }
+            },
             'click .del': function(e) {
-                alert($.cookie('uid'));
-                
                 if (confirm('Do you really want to delete the topic "'+this.model.get('name')+'"?')) {
                     this.model.destroy({success: function(model, res) {
                         if(!res.deleted)
@@ -81,10 +103,7 @@ define([
         },
         
         initialize: function() {
-            var that = this;
-            var fetching = this.model.fetch();
-            fetching.done(function() {that.render();});
-            
+            // define new helper for template
             Handlebars.registerHelper('ifis', function(a, b, opts) {
                 if(a == b) {
                     return opts.fn(this);
@@ -93,32 +112,33 @@ define([
                 }
             });
         },
-        
+
         onRender: function() {
-            ht = $('.desc').height();
+            this.onAction();
+            
+            /*ht = $('.desc').height();
             if(ht > 300) {
                 $('.desc').height(200);
-                $(".open-desc").css("display", "block");
+                $('.open-desc').css("display", "block");
+            }*/
+        },
+        
+        onShow: function() {
+            this.onAction();
+        },
+        
+        onAction: function() {
+            // if user is owner, pid is in response
+            if(this.model.get('pid')) {
+                $('.right-pos').append('<button class="ico edit" title="edit"><span></span></button>');
+                $('.right-pos').append('<button class="ico del" title="delete"><span></span></button>');
             }
             
-            $.get('https://beta.etherpad.org/p/dhfghfg/export/html',
-               {},
-               function(data,status) {
-                var str = data.replace(/\r?\n/g, "");
-                var body = str.replace(/^.*?<body[^>]*>(.*?)<\/body>.*?$/i,"$1");
-                $('#descriptionPad').html(body);
-             });
-             
-             $('#timeremaining').countdown('2015/05/20', function(event) {
-               $(this).html(event.strftime('%D:%H:%M:%S'));
-             });
-
-            /*$('#descriptionPad').pad(
-                {'height' : 400,
-                 'noColors' : true,
-                 'borderStyle' : 'none',
-                 'padId':this.model.get('_id')
-            });*/
+            //var date = Date.now() + (7*24*3600*1000);
+            var date = this.model.get('nextStageDeadline');
+            $('#timeremaining').countdown(date, function(event) {
+                $(this).html(event.strftime('%D:%H:%M:%S'));
+            });
         }
     });
     

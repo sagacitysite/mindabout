@@ -22,7 +22,7 @@ exports.auth_wrapper = function(req, res, next) {
                                     'auth_token': req.signedCookies.auth_token },
     function(err, user){
         if(user){
-            console.log('User authentication valid ' + JSON.stringify(user));
+            //console.log('User authentication valid ' + JSON.stringify(user));
 
             // handle request
             next(req, res);

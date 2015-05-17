@@ -1,11 +1,9 @@
 <div class="view" id="topic-details">
     
     <div class="right-pos">
-        <button class="ico join{{#if joined}} joined{{/if}}" title="{{#if joined}}leave{{else}}join{{/if}}"><span></span></button>
-        <button class="ico vote{{#if voted}} voted{{/if}}" title="{{#if joined}}unvote{{else}}vote{{/if}}"><span></span></button>
+        <button class="ico join{{#if joined}} active{{/if}}" title="{{#if joined}}leave{{else}}join{{/if}}"><span></span></button>
+        <button class="ico vote{{#if voted}} active{{/if}}" title="{{#if joined}}unvote{{else}}vote{{/if}}"><span></span></button>
         <!-- TODO in v0.2 <button class="ico merge" title="merge request"><span></span></button>-->
-        <button class="ico edit" title="edit"><span></span></button>
-        <button class="ico del" title="delete"><span></span></button>
     </div>
     
     <h1>{{name}}</h1>
@@ -16,11 +14,11 @@
     
     <hr/>
         
-    <h2>Description</h2>
-    <!--<div class="desc">{{desc}}</div>-->
-    <div class="open-desc"><span>more</span></div>
+    <!--<h2>Description</h2>-->
+    <div class="desc">{{{desc}}}</div>
+    <!--<div class="open-desc"><span>more</span></div>-->
     
-	<div id="descriptionPad"></div>
+	<div id="editor"></div>
     <!--<hr/>
     
      #ifis status 3 

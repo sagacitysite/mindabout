@@ -23,44 +23,50 @@ define([
         events: {
             'click .add': function(e) {
                 if(e) e.preventDefault();
-                this.$(".topic-id").val("");
-                this.$(".topic-name").val("");
-                this.$(".topic-desc").val("");
+                this.$('.topic-id').val("");
+                this.$('.topic-name').val("");
+                this.$('.topic-desc').val("");
                 
                 this.$(".lightbox").fadeIn(500);
             },
             'click .save': function(e) {
                 if(e) e.preventDefault();
                 
-                if(this.$(".topic-id").val()) {
-                    var topic = topics.get(this.$(".topic-id").val());
-                    topic.set({name: this.$(".topic-name").val(), desc: this.$(".topic-desc").val()});
-                    topic.save();
-                } else {
-                    var Model = this.collection.model;
-                    var topic = new Model({
-                        name: this.$(".topic-name").val(),
-                        desc: this.$(".topic-desc").val(),
+                var topic;
+                var newtopic=false;
+                if(this.$('.topic-id').val()) {
+                    // if topic already exists -> edit
+                    topic = topics.get(this.$('.topic-id').val());
+                    topic.set({
+                        name: this.$('.topic-name').val(),
+                        desc: this.$('.topic-desc').val()
                     });
-                    topic.save({},
-                        {success: function(model,response,options) {
-                            //alert('test123');
-                            //if(!res.created)
-                            //    alert(JSON.stringify(response));
-                            topic.set(response);
-                            topics.add(topic);
-                        }.bind(this)
-                        });
-                    //topic.save();
-                    //topic.set({status: 0, level: 0, votes: 0}); // FIXME fix code above
-                    //topics.add(topic);
+                } else {
+                    // if topic is new -> create
+                    var Model = this.collection.model;
+                    topic = new Model({
+                        name: this.$('.topic-name').val(),
+                        desc: this.$('.topic-desc').val()
+                    });
+                    newtopic=true;
                 }
-                this.$(".lightbox").fadeOut(500);
+                //check if edited model is valid before performing changes
+                topic.save({}, {
+                    success: function(model,res) {
+                        if(!res._id) {
+                            alert("Couldn't create topic! Topic name already exists.")
+                            return;
+                        }
+                        topic.set(res);
+                        if(newtopic) topics.add(topic);
+                    }.bind(this)
+                });
+                this.$('.lightbox').fadeOut(500);
                 this.render();
             },
             'click .cancel': function(e) {
                 if(e) e.preventDefault();
-                this.$(".lightbox").fadeOut(500);
+                this.$('.lightbox').fadeOut(500);
             }/*,
             'click .lightbox': function(e) {
                 this.$(".lightbox").fadeOut(500);
